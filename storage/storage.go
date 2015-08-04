@@ -41,6 +41,7 @@ func (storage *Storage) Update(raw_message []byte) {
 		return
 	}
 	storage.Data[message.Id] = raw_message
+	fmt.Println("Updated", message.Id)
 	if storage.OnUpdate != nil {
 		go storage.OnUpdate(storage, raw_message)
 	}

@@ -7,23 +7,23 @@ import (
 	"testing"
 
 	"github.com/pdxjohnny/dist-rts/config"
-	"github.com/pdxjohnny/websocket-mircoservice/random"
-	"github.com/pdxjohnny/websocket-mircoservice/server"
+	"github.com/pdxjohnny/microsocket/random"
+	"github.com/pdxjohnny/microsocket/server"
 )
 
 type TestStorage struct {
 	Method string
-	id     string
+	Id     string
 }
 
-func checkOnUpdate(should_be string, gotUpdate chan int) func(storage *struct, raw_message []byte) {
-	return func(storage *struct, raw_message []byte) {
+func checkOnUpdate(should_be string, gotUpdate chan int) func(storage *Storage, raw_message []byte) {
+	return func(storage *Storage, raw_message []byte) {
 		// Create a new message struct
 		message := new(TestStorage)
 		// Parse the message to a json
 		json.Unmarshal(raw_message, &message)
 		fmt.Println(string(raw_message))
-		if should_be == string(message.id) {
+		if should_be == string(message.Id) {
 			gotUpdate <- 1
 		}
 	}
@@ -43,7 +43,7 @@ func TestStorageCallMethod(t *testing.T) {
 	}
 	go storage.Read()
 	log.Println("Waiting for gotUpdate", randString)
-	checkJson := fmt.Sprintf("{\"id\": \"%s\", \"method\": \"update\"}", randString)
+	checkJson := fmt.Sprintf("{\"Id\": \"%s\", \"method\": \"Update\"}", randString)
 	storage.Write([]byte(checkJson))
 	<-gotUpdate
 	log.Println("Got gotUpdate", randString)

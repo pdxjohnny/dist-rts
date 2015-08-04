@@ -4,47 +4,43 @@ import (
 	"encoding/json"
 	"log"
 
-	"github.com/pdxjohnny/websocket-mircoservice/service"
+	"github.com/pdxjohnny/microsocket/service"
 )
 
 type Storage struct {
-	service.Service
-	// Store anything with an id here the key is the key
+	*service.Service
+	// Store anything with an Id here the key is the key
 	Data map[string][]byte
 	// Something to call on update
 	OnUpdate func(*Storage, []byte)
 }
 
-// Store anything with an id
+// Store anything with an Id
 type Message struct {
-	id string
+	Id string
 }
 
 func NewStorage() *Storage {
-	// Create a new stroage struct
-	storage := new(Storage)
-	// Set Recv to MethodMap which will call the correct method
-	storage.Recv = storage.MethodMap
-	// Setup the methods to call
-	storage.Methods = map[string]service.Method{
-		"update": Update,
-	}
-	return storage
+	// Service setup
+	inner := service.NewService()
+	storage := Storage{Service: inner}
+	storage.Caller = &storage
+	// Init Dat map
+	storage.Data = make(map[string][]byte)
+	return &storage
 }
 
-func Update(raw_storage *interface{}, raw_message []byte) {
-  // Typecast the interface as Storage
-  storage := raw_storage.(Storage)
+func (storage *Storage) Update(raw_message []byte) {
 	// Create a new message struct
 	message := new(Message)
 	// Parse the message to a json
 	err := json.Unmarshal(raw_message, &message)
-	// Return if error or no id
-	if err != nil || message.id == "" {
+	// Return if error or no Id
+	if err != nil || message.Id == "" {
 		return
 	}
-	storage.Data[message.id] = raw_message
-	log.Println("Updated", message.id)
+	storage.Data[message.Id] = raw_message
+	log.Println("Updated", message.Id)
 	if storage.OnUpdate != nil {
 		go storage.OnUpdate(storage, raw_message)
 	}

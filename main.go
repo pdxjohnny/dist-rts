@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/pdxjohnny/dist-rts/server"
+	"github.com/pdxjohnny/websocket-mircoservice/server"
 )
 
 func main() {

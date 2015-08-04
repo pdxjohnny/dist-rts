@@ -2,7 +2,8 @@ package storage
 
 import (
 	"encoding/json"
-	"log"
+	"fmt"
+	"bytes"
 
 	"github.com/pdxjohnny/microsocket/service"
 )
@@ -40,8 +41,21 @@ func (storage *Storage) Update(raw_message []byte) {
 		return
 	}
 	storage.Data[message.Id] = raw_message
-	log.Println("Updated", message.Id)
 	if storage.OnUpdate != nil {
 		go storage.OnUpdate(storage, raw_message)
 	}
+}
+
+func (storage *Storage) Dump(printTo *bytes.Buffer) {
+  fmt.Fprintf(printTo, "{")
+	onSaved := 0
+	writeComma := ","
+  for key, value := range storage.Data {
+		onSaved++
+		if onSaved >= len(storage.Data) {
+			writeComma = ""
+		}
+    fmt.Fprintf(printTo, "%q: %s%s", key, string(value), writeComma)
+  }
+  fmt.Fprintf(printTo, "}")
 }

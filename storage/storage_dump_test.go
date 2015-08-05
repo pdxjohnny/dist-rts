@@ -5,18 +5,37 @@ import (
 	"log"
 	"testing"
 
+	"github.com/pdxjohnny/microsocket/random"
+
+	"github.com/pdxjohnny/dist-rts/client"
 	"github.com/pdxjohnny/dist-rts/config"
 )
 
 func TestStorageDump(t *testing.T) {
 	conf := config.Load()
-	storage := NewStorage()
 	wsUrl := fmt.Sprintf("http://%s:%s/ws", conf.Host, conf.Port)
+	// Set up the storage service
+	storage := NewStorage()
 	err := storage.Connect(wsUrl)
 	if err != nil {
 		log.Println(err)
 	}
-	storage.Read()
+	go storage.Read()
+	// Set up the client
+	clientTest := client.NewClient()
+	err = clientTest.Connect(wsUrl)
+	if err != nil {
+		log.Println(err)
+	}
+	go clientTest.Read()
+	// Populate the storage.Data
+	for index := 0; index < 5; index++ {
+		item := map[string]interface{}{
+			"id":       random.Letters(5),
+			"ClientId": clientTest.ClientId,
+		}
+		clientTest.Save(item)
+	}
 }
 
 //

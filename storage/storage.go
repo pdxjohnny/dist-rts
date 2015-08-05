@@ -3,6 +3,7 @@ package storage
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/pdxjohnny/microsocket/service"
 )
@@ -13,8 +14,8 @@ type Storage struct {
 	Data map[string][]byte
 	// Something to call on update
 	OnUpdate func(*Storage, []byte)
-	// Keep track of dumped objects
-	DumpTrack map[string]map[string]bool
+	// keep track of if we should dump or not
+	DumpTrack map[string]chan bool
 }
 
 // Store anything with an Id
@@ -25,8 +26,11 @@ type UpdateMessage struct {
 // Store anything with an Id
 type DumpMessage struct {
 	UpdateMessage
-	DumpKey  string
-	DumpDone bool
+	DumpKey    string
+	DumpDone   bool
+	DumpChosen bool
+	// The client id of the service that is chosen to dump
+	ClientId string
 }
 
 func NewStorage() *Storage {
@@ -37,7 +41,7 @@ func NewStorage() *Storage {
 	// Init Data map
 	storage.Data = make(map[string][]byte)
 	// Init DumpTrack map
-	storage.DumpTrack = make(map[string]map[string]bool)
+	storage.DumpTrack = make(map[string]chan bool)
 	return &storage
 }
 
@@ -56,12 +60,36 @@ func (storage *Storage) Update(raw_message []byte) {
 	}
 }
 
-func (storage *Storage) DumpTracker(DumpKey string) {
+func (storage *Storage) DumpTracker(DumpKey string) bool {
+	// Allocate a channel
 	_, ok := storage.DumpTrack[DumpKey]
-	if ok {
-		delete(storage.DumpTrack, DumpKey)
+	if !ok {
+		storage.DumpTrack[DumpKey] = make(chan bool, 1)
 	}
-	storage.DumpTrack[DumpKey] = make(map[string]bool)
+	// Wait for client of choose this service to Dump
+	chooseMe := map[string]interface{}{
+		"method":   "ChooseDump",
+		"DumpKey":  DumpKey,
+		"ClientId": storage.ClientId,
+	}
+	sendChoose, err := json.Marshal(chooseMe)
+	if err != nil {
+		return false
+	}
+	storage.Write(sendChoose)
+	// If the service is not
+	timeout := make(chan bool, 1)
+	go func() {
+		time.Sleep(30 * time.Second)
+		timeout <- true
+	}()
+	select {
+	case wasChosen := <-storage.DumpTrack[DumpKey]:
+		return wasChosen
+	case <-timeout:
+		return false
+	}
+	return false
 }
 
 func (storage *Storage) AddDumpKey(raw_message []byte, DumpKey string) ([]byte, error) {
@@ -73,8 +101,26 @@ func (storage *Storage) AddDumpKey(raw_message []byte, DumpKey string) ([]byte, 
 	}
 	addDumpKey := loadValue.(map[string]interface{})
 	addDumpKey["DumpKey"] = DumpKey
+	addDumpKey["method"] = "RecvDump"
 	// DEBUG add ServiceID to see who sent what
 	addDumpKey["StorageId"] = storage.ClientId
+	// Turn the object back into a json
+	dumpValue, err := json.Marshal(addDumpKey)
+	if err != nil {
+		return nil, err
+	}
+	return dumpValue, nil
+}
+
+func (storage *Storage) ChangeMessageKey(raw_message []byte, key string, value interface{}) ([]byte, error) {
+	// Add the DumpKey to the object
+	var loadValue interface{}
+	err := json.Unmarshal(raw_message, &loadValue)
+	if err != nil {
+		return nil, err
+	}
+	addDumpKey := loadValue.(map[string]interface{})
+	addDumpKey[key] = value
 	// Turn the object back into a json
 	dumpValue, err := json.Marshal(addDumpKey)
 	if err != nil {
@@ -94,23 +140,24 @@ func (storage *Storage) Dump(raw_message []byte) {
 	}
 	// Otherwise Dump data
 	// Make sure the map is initialized
-	storage.DumpTracker(message.DumpKey)
+	shouldDump := storage.DumpTracker(message.DumpKey)
+	if !shouldDump {
+		fmt.Println("I should not Dump")
+		return
+	}
+	fmt.Println("I should Dump")
 	// Loop through all stored data
-	for key, value := range storage.Data {
-		// Make sure this stored object hasn't been dumped yet
-		_, ok := storage.DumpTrack[message.DumpKey][key]
-		if !ok {
-			// Set the object to has been dumped
-			storage.DumpTrack[message.DumpKey][key] = true
-			// Add the DumpKey to the object
-			dumpValue, err := storage.AddDumpKey(value, message.DumpKey)
-			if err != nil {
-				fmt.Println(err)
-				continue
-			}
-			// Dump it to clients
-			storage.Write(dumpValue)
+	for _, value := range storage.Data {
+		// Add the DumpKey to the object
+		dumpValue, err := storage.AddDumpKey(value, message.DumpKey)
+		if err != nil {
+			fmt.Println(err)
+			continue
 		}
+		// DEBUG
+		fmt.Println("sent", string(dumpValue))
+		// Dump it to clients
+		storage.Write(dumpValue)
 	}
 	// Tell clients we are done dumping
 	DumpDone := DumpMessage{
@@ -127,18 +174,24 @@ func (storage *Storage) Dump(raw_message []byte) {
 	delete(storage.DumpTrack, message.DumpKey)
 }
 
-func (storage *Storage) RecvDump(raw_message []byte) {
+func (storage *Storage) DumpChosen(raw_message []byte) {
 	// Create a new message struct
 	message := new(DumpMessage)
 	// Parse the message to a json
 	err := json.Unmarshal(raw_message, &message)
-	// Return if error or no DumpKey or Dump is finished
-	if err != nil || message.DumpKey == "" || message.DumpDone {
+	fmt.Println(string(raw_message))
+	// Return if error or no DumpKey or not the client specified to dump
+	if err != nil || message.DumpKey == "" ||
+		message.ClientId != storage.ClientId {
 		return
 	}
-	// Otherwise update the DumpTrack map to show the object as dumped
-	// Make sure the map is initialized
-	storage.DumpTracker(message.DumpKey)
-	// Set the object to has been dumped
-	storage.DumpTrack[message.DumpKey][message.Id] = true
+	fmt.Println("Sending ", message.DumpChosen)
+	// Otherwise
+	// Check if this request is applicable to this instance
+	_, ok := storage.DumpTrack[message.DumpKey]
+	// If it is then there will be a channel and this will
+	if ok {
+		// Send the response to the channel
+		storage.DumpTrack[message.DumpKey] <- message.DumpChosen
+	}
 }

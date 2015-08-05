@@ -3,9 +3,8 @@ package client
 import (
 	"encoding/json"
 
+	"github.com/pdxjohnny/microsocket/random"
 	"github.com/pdxjohnny/microsocket/service"
-
-	// "github.com/pdxjohnny/dist-rts/storage"
 )
 
 type Client struct {
@@ -61,27 +60,51 @@ func (client *Client) Save(saveThis interface{}) error {
 	return client.Send(addUpdateKey)
 }
 
-// func (client *Client) AllData(raw_message []byte) *map[string]interface{} {
-//
-// }
-//
-// func (client *Client) ChooseDump(raw_message []byte) {
-// 	// Create a new message struct
-// 	message := new(DumpMessage)
-// 	// Parse the message to a json
-// 	err := json.Unmarshal(raw_message, &message)
-// 	fmt.Println(string(raw_message))
-// 	// Return if error or no DumpKey or not the client specified to dump
-// 	if err != nil || message.DumpKey == "" ||
-// 		message.ClientId != storage.ClientId {
-// 		return
-// 	}
-// 	// Otherwise
-// 	// Check if this request is applicable to this instance
-// 	_, ok := client.Channels[message.DumpKey]
-// 	// If it is then there will be a channel and this will
-// 	if ok {
-// 		// Send the response to the channel
-// 		client.Channels[message.DumpKey] <- message.DumpChosen
-// 	}
-// }
+func (client *Client) CreateChannel() string {
+	ChannelKey := random.Letters(10)
+	// Allocate a channel so we know when all data has been received
+	_, ok := client.Channels[ChannelKey]
+	// Delete it if it already exists
+	if ok {
+		delete(client.Channels, ChannelKey)
+	}
+	// Make the channel
+	client.Channels[ChannelKey] = make(chan bool, 1)
+	return ChannelKey
+}
+
+func (client *Client) AllData(callback func(map[string]interface{})) error {
+	ChannelKey := client.CreateChannel()
+	// Allocate a channel so we know when all data has been received
+	_, ok := client.Channels[ChannelKey]
+	// Delete it if it already exists
+	if ok {
+		delete(client.Channels, ChannelKey)
+	}
+	// Make the channel
+	client.Channels[ChannelKey] = make(chan bool, 1)
+
+	// go callback(allData)
+	return nil
+}
+
+func (client *Client) ChooseDump(raw_message []byte) {
+	// // Create a new message struct
+	// message := new(storage.DumpMessage)
+	// // Parse the message to a json
+	// err := json.Unmarshal(raw_message, &message)
+	// fmt.Println(string(raw_message))
+	// // Return if error or no DumpKey or not the client specified to dump
+	// if err != nil || message.DumpKey == "" ||
+	// 	message.ClientId != storage.ClientId {
+	// 	return
+	// }
+	// // Otherwise
+	// // Check if this request is applicable to this instance
+	// _, ok := client.Channels[message.DumpKey]
+	// // If it is then there will be a channel and this will
+	// if ok {
+	// 	// Send the response to the channel
+	// 	client.Channels[message.DumpKey] <- message.DumpChosen
+	// }
+}

@@ -56,6 +56,23 @@ func (storage *Storage) Update(raw_message []byte) {
 	}
 }
 
+func (storage *Storage) AddDumpKey(raw_message []byte, DumpKey string) ([]byte, error) {
+	// Add the DumpKey to the object
+	var loadValue interface{}
+	err := json.Unmarshal(raw_message, &loadValue)
+	if err != nil {
+		return nil, err
+	}
+	addDumpKey := loadValue.(map[string]interface{})
+	addDumpKey["DumpKey"] = DumpKey
+	// Turn the object back into a json
+	dumpValue, err := json.Marshal(addDumpKey)
+	if err != nil {
+		return nil, err
+	}
+	return dumpValue, nil
+}
+
 func (storage *Storage) Dump(raw_message []byte) {
 	// Create a new message struct
 	message := new(DumpMessage)
@@ -74,17 +91,10 @@ func (storage *Storage) Dump(raw_message []byte) {
 			// Set the object to has been dumped
 			storage.DumpTrack[message.DumpKey][key] = true
 			// Add the DumpKey to the object
-			var loadValue interface{}
-			err := json.Unmarshal(value, &loadValue)
+			dumpValue, err := storage.AddDumpKey(value, message.DumpKey)
 			if err != nil {
 				fmt.Println(err)
-			}
-			addDumpKey := loadValue.(map[string]interface{})
-			addDumpKey["DumpKey"] = message.DumpKey
-			// Turn the object back into a json
-			dumpValue, err := json.Marshal(addDumpKey)
-			if err != nil {
-				fmt.Println(err)
+				continue
 			}
 			// Dump it to clients
 			storage.Write(dumpValue)

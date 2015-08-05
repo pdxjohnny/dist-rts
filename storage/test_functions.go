@@ -1,7 +1,7 @@
 package storage
 
 import (
-  "encoding/json"
+	"encoding/json"
 )
 
 type TestStorage struct {

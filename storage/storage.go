@@ -56,6 +56,14 @@ func (storage *Storage) Update(raw_message []byte) {
 	}
 }
 
+func (storage *Storage) DumpTracker(DumpKey string) {
+	_, ok := storage.DumpTrack[DumpKey]
+	if ok {
+		delete(storage.DumpTrack, DumpKey)
+	}
+	storage.DumpTrack[DumpKey] = make(map[string]bool)
+}
+
 func (storage *Storage) AddDumpKey(raw_message []byte, DumpKey string) ([]byte, error) {
 	// Add the DumpKey to the object
 	var loadValue interface{}
@@ -83,6 +91,8 @@ func (storage *Storage) Dump(raw_message []byte) {
 		return
 	}
 	// Otherwise Dump data
+	// Make sure the map is initialized
+	storage.DumpTracker(message.DumpKey)
 	// Loop through all stored data
 	for key, value := range storage.Data {
 		// Make sure this stored object hasn't been dumped yet
@@ -103,7 +113,7 @@ func (storage *Storage) Dump(raw_message []byte) {
 	// Tell clients we are done dumping
 	DumpDone := DumpMessage{
 		DumpDone: true,
-		DumpKey: message.DumpKey,
+		DumpKey:  message.DumpKey,
 	}
 	sendDumpDone, err := json.Marshal(DumpDone)
 	if err != nil {
@@ -125,6 +135,8 @@ func (storage *Storage) RecvDump(raw_message []byte) {
 		return
 	}
 	// Otherwise update the DumpTrack map to show the object as dumped
+	// Make sure the map is initialized
+	storage.DumpTracker(message.DumpKey)
 	// Set the object to has been dumped
 	storage.DumpTrack[message.DumpKey][message.Id] = true
 }

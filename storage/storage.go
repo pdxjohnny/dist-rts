@@ -80,7 +80,7 @@ func (storage *Storage) DumpTracker(DumpKey string) bool {
 	// If the service is not
 	timeout := make(chan bool, 1)
 	go func() {
-		time.Sleep(30 * time.Second)
+		time.Sleep(5 * time.Second)
 		timeout <- true
 	}()
 	select {

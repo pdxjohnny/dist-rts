@@ -28,20 +28,23 @@ func NewClient() *Client {
 	return &client
 }
 
-func (client *Client) Save(update_obj interface{}) error {
-	asBytes, err := json.Marshal(update_obj)
+func (client *Client) ToMap(mapObj interface{}) (map[string]interface{}, error) {
+	asBytes, err := json.Marshal(mapObj)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	var loadValue interface{}
 	err = json.Unmarshal(asBytes, &loadValue)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	addUpdateKey := loadValue.(map[string]interface{})
-	addUpdateKey["method"] = "Update"
+	asMap := loadValue.(map[string]interface{})
+	return asMap, nil
+}
+
+func (client *Client) Send(sendObj interface{}) error {
 	// Turn the object back into a json
-	asBytes, err = json.Marshal(addUpdateKey)
+	asBytes, err := json.Marshal(sendObj)
 	if err != nil {
 		return err
 	}
@@ -49,25 +52,36 @@ func (client *Client) Save(update_obj interface{}) error {
 	return nil
 }
 
-//
+func (client *Client) Save(saveThis interface{}) error {
+	addUpdateKey, err := client.ToMap(saveThis)
+	if err != nil {
+		return err
+	}
+	addUpdateKey["method"] = "Update"
+	return client.Send(addUpdateKey)
+}
+
 // func (client *Client) AllData(raw_message []byte) *map[string]interface{} {
 //
 // }
 //
 // func (client *Client) ChooseDump(raw_message []byte) {
 // 	// Create a new message struct
-// 	message := new(storage.DumpMessage)
+// 	message := new(DumpMessage)
 // 	// Parse the message to a json
 // 	err := json.Unmarshal(raw_message, &message)
-// 	// Return if error or no DumpKey or Dump is finished
-// 	if err != nil || message.DumpKey == "" || message.DumpDone {
+// 	fmt.Println(string(raw_message))
+// 	// Return if error or no DumpKey or not the client specified to dump
+// 	if err != nil || message.DumpKey == "" ||
+// 		message.ClientId != storage.ClientId {
 // 		return
 // 	}
-// 	// Otherwise update the DumpTrack map to show the object as dumped
-// 	// Make sure the map is initialized
-// 	client.DumpTracker(message.DumpKey)
-// 	// DEBUG
-// 	fmt.Println("updating", string(raw_message))
-// 	// Set the object to has been dumped
-// 	client.DumpTrack[message.DumpKey][message.Id] = true
+// 	// Otherwise
+// 	// Check if this request is applicable to this instance
+// 	_, ok := client.Channels[message.DumpKey]
+// 	// If it is then there will be a channel and this will
+// 	if ok {
+// 		// Send the response to the channel
+// 		client.Channels[message.DumpKey] <- message.DumpChosen
+// 	}
 // }

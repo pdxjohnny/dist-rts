@@ -73,6 +73,8 @@ func (storage *Storage) AddDumpKey(raw_message []byte, DumpKey string) ([]byte, 
 	}
 	addDumpKey := loadValue.(map[string]interface{})
 	addDumpKey["DumpKey"] = DumpKey
+	// DEBUG add ServiceID to see who sent what
+	addDumpKey["StorageId"] = storage.ClientId
 	// Turn the object back into a json
 	dumpValue, err := json.Marshal(addDumpKey)
 	if err != nil {

@@ -124,8 +124,8 @@ func (storage *Storage) Dump(raw_message []byte) {
 	}
 	// Tell clients we are done dumping
 	DumpDone := messages.StorageDump{
-		Method: "DumpDone",
-		DumpKey:  message.DumpKey,
+		Method:  "DumpDone",
+		DumpKey: message.DumpKey,
 	}
 	sendDumpDone, err := json.Marshal(DumpDone)
 	if err != nil {

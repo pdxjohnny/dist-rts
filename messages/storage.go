@@ -9,7 +9,7 @@ type StorageUpdate struct {
 // Store anything with an Id
 type StorageDump struct {
 	StorageUpdate
-	DumpKey  string
+	DumpKey string
 	// The client id of the service that is chosen to dump
 	ClientId string
 	Method   string

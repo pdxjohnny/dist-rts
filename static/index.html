@@ -1,0 +1,91 @@
+<!--
+Application: dist-rts
+File: Home page
+Date: 8/6/15
+Author: John Andersen
+(c) Copyright 2015 All rights reserved
+-->
+
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en" oncontextmenu="return false;" > <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en" oncontextmenu="return false;" > <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en" oncontextmenu="return false;" > <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="en" oncontextmenu="return false;" > <!--<![endif]-->
+<head>
+
+	<!-- Basic Page Needs
+  ================================================== -->
+	<meta charset="utf-8">
+	<title>dist-rts</title>
+	<meta name="title" content="dist-rts">
+	<meta name="description" content="Distributed Real Time Strategy Game">
+	<meta name="author" content="John Andersen">
+
+	<!-- Mobile Specific Metas
+  ================================================== -->
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<!-- CSS
+  ================================================== -->
+	<!-- <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css"> -->
+
+	<!--[if lt IE 9]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+
+	<!-- Favicons
+	================================================== -->
+	<!-- <link rel="shortcut icon" href="images/favicon.ico"> -->
+	<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+
+	<!-- Scripts
+	================================================== -->
+	<script src="jquery.js"></script>
+	<script src="api.js"></script>
+	<script src="canvas.js" ></script>
+	<script src="game.js" ></script>
+	<script src="ui.js" ></script>
+	<script src="sprite.js" ></script>
+	<script src="player.js" ></script>
+	<script src="stars.js" ></script>
+	<script src="space.js" ></script>
+
+</head>
+
+<div id="top_bar" style="
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	min-height: 0px;
+	z-index:99;
+	background-color: rgba(255, 255, 255, 0.6);
+	color: black;">
+
+</div>
+<div id="bottom_bar" style="
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	min-height: 0px;
+	z-index:99;
+	background-color: rgba(255, 255, 255, 0.6);
+	color: black;">
+
+</div>
+
+<canvas id="game_canvas" ></canvas>
+
+</html>
+<script>
+main_game = new space("game_canvas");
+main_game.start();
+
+main_game.add_player("other");
+main_game.add_player("pdxjohnny");
+main_game.control("pdxjohnny");
+</script>

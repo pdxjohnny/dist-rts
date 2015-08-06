@@ -1,0 +1,5 @@
+#!/bin/bash
+
+gofmt -w *.go
+gofmt -w */*.go
+find ./ -name "*.js" -exec js-beautify -rjn -s 2 {} \;

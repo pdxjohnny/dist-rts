@@ -30,7 +30,7 @@ func checkOnUpdate(should_be string, gotUpdate chan int) func(storage *Storage, 
 func TestStorageUpdate(t *testing.T) {
 	conf := config.Load()
 	gotUpdate := make(chan int)
-	randString := random.Letters(50)
+	randString := random.Letters(5)
 	storage := NewStorage()
 	storage.OnUpdate = checkOnUpdate(randString, gotUpdate)
 	wsUrl := fmt.Sprintf("http://%s:%s/ws", conf.Host, conf.Port)

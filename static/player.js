@@ -1,6 +1,6 @@
 var player = function player(name) {
   this.stats = {};
-  this.stats._id = name;
+  this.stats.Id = name;
   this.image = new Image();
   this.load();
   this.key_down_event = this.create_key_down_event();
@@ -61,7 +61,7 @@ player.prototype.save = function () {
 
 player.prototype.load = function (load_image) {
   var stats = {
-    _id: this.stats._id,
+    Id: this.stats.Id,
     ship: 'default',
     image: 'assets/default.png',
     keys_down: {},
@@ -85,5 +85,5 @@ player.prototype.update_stats = function (stats) {
     this.show = true;
   }
   delete this.stats.image;
-  console.log(this.stats._id + ' loaded stats', this);
+  console.log(this.stats.Id + ' loaded stats', this);
 }

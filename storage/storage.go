@@ -144,7 +144,7 @@ func (storage *Storage) Dump(raw_message []byte) {
 
 func (storage *Storage) DumpChosen(raw_message []byte) {
 	// Create a new message struct
-	message := new(messages.StorageDump)
+	message := new(messages.StorageChooseDump)
 	// Parse the message to a json
 	err := json.Unmarshal(raw_message, &message)
 	// Return if error or no DumpKey or not the client specified to dump

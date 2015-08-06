@@ -33,7 +33,7 @@ func TestStorageDump(t *testing.T) {
 	// Populate the storage.Data
 	for index := 0; index < numSaved; index++ {
 		item := map[string]interface{}{
-			"id": random.Letters(5),
+			"Id": random.Letters(5),
 		}
 		clientTest.Save(item)
 	}

@@ -11,8 +11,7 @@ type StorageDump struct {
 	StorageUpdate
 	DumpKey string
 	// The client id of the service that is chosen to dump
-	ClientId string
-	Method   string
+	Method string
 }
 
 // Store anything with an Id

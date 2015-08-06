@@ -88,7 +88,7 @@ func (client *Client) Save(saveThis interface{}) error {
 }
 
 func (client *Client) AllData() map[string]interface{} {
-	// Create a channel so we know when we are done
+	// Create a channel so we know the storage services id
 	ChannelKey := client.CreateChannel()
 	// Allocate a shared map so we can store received objects in it
 	client.PrepShared(ChannelKey)
@@ -111,7 +111,9 @@ func (client *Client) AllData() map[string]interface{} {
 	}
 	// Send the message to make storage services send ChooseDump
 	client.Send(sendChose)
-	return nil
+	// Wait a DumpDone message to come back
+	<-client.Channels[ChannelKey]
+	return allData
 }
 
 func (client *Client) ChooseDump(raw_message []byte) {
@@ -125,28 +127,49 @@ func (client *Client) ChooseDump(raw_message []byte) {
 	}
 	// If we are waiting for this DumpKey then it will be in Channels
 	_, ok := client.Channels[message.DumpKey]
-	// If its not there don't worry
+	// If its not there don't worry about this message
 	if !ok {
 		return
 	}
 	client.Channels[message.DumpKey] <- message.ClientId
 }
 
-// func (client *Client) DumpRecv(raw_message []byte) {
-// 	// Create a new message struct
-// 	message := new(DumpMessage)
-// 	// Parse the message to a json
-// 	err := json.Unmarshal(raw_message, &message)
-// 	fmt.Println(string(raw_message))
-// 	// Return if error or no DumpKey or not the client specified to dump
-// 	if err != nil || message.DumpKey == "" ||
-// 		message.ClientId != storage.ClientId {
-// 		return
-// 	}
-// 	// Allocate a channel so we know when all data has been received
-// 	_, ok := client.Channels[ChannelKey]
-// 	// Delete it if it already exists
-// 	if ok {
-// 		delete(client.Channels, ChannelKey)
-// 	}
-// }
+func (client *Client) DumpRecv(raw_message []byte) {
+	// Parse the message to a json
+	message, err := client.MapBytes(raw_message)
+	// Return if error or no DumpKey or not the client specified to dump
+	ChannelKey := message["DumpKey"].(string)
+	if err != nil || ChannelKey == "" {
+		return
+	}
+	// If we are waiting for this DumpKey then it will be in Channels
+	_, ok := client.Channels[ChannelKey]
+	// If its not there don't worry about this message
+	if !ok {
+		return
+	}
+	// Added it to the Shared map of data received
+	messageId := message["Id"].(string)
+	// client.Shared[ChannelKey] is a pointer to a map
+	allData := client.Shared[ChannelKey].(*map[string]interface{})
+	// Dereference the pointer to the map
+	(*allData)[messageId] = &message
+}
+
+func (client *Client) DumpDone(raw_message []byte) {
+	// Parse the message to a json
+	message, err := client.MapBytes(raw_message)
+	// Return if error or no DumpKey or not the client specified to dump
+	ChannelKey := message["DumpKey"].(string)
+	if err != nil || ChannelKey == "" {
+		return
+	}
+	// If we are waiting for this DumpKey then it will be in Channels
+	_, ok := client.Channels[ChannelKey]
+	// If its not there don't worry about this message
+	if !ok {
+		return
+	}
+	// Send the done signal to the channel
+	client.Channels[ChannelKey] <- "Done"
+}

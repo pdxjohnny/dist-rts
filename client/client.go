@@ -83,7 +83,7 @@ func (client *Client) Save(saveThis interface{}) error {
 	if err != nil {
 		return err
 	}
-	addUpdateKey["method"] = "Update"
+	addUpdateKey["Method"] = "Update"
 	return client.Send(addUpdateKey)
 }
 
@@ -132,7 +132,7 @@ func (client *Client) ChooseDump(raw_message []byte) {
 	client.Channels[message.DumpKey] <- message.ClientId
 }
 
-// func (client *Client) RecvDump(raw_message []byte) {
+// func (client *Client) DumpRecv(raw_message []byte) {
 // 	// Create a new message struct
 // 	message := new(DumpMessage)
 // 	// Parse the message to a json

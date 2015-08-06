@@ -79,7 +79,7 @@ func (storage *Storage) DumpTracker(DumpKey string) bool {
 	return false
 }
 
-func (storage *Storage) ChangeMessageKey(raw_message []byte, key string, value interface{}) ([]byte, error) {
+func (storage *Storage) ChangeMessageKey(raw_message []byte, keys_and_values ...interface{}) ([]byte, error) {
 	// Add the DumpKey to the object
 	var loadValue interface{}
 	err := json.Unmarshal(raw_message, &loadValue)
@@ -87,7 +87,9 @@ func (storage *Storage) ChangeMessageKey(raw_message []byte, key string, value i
 		return nil, err
 	}
 	addDumpKey := loadValue.(map[string]interface{})
-	addDumpKey[key] = value
+	for index := 0; index < len(keys_and_values); index += 2 {
+		addDumpKey[keys_and_values[index].(string)] = keys_and_values[index+1]
+	}
 	// Turn the object back into a json
 	dumpValue, err := json.Marshal(addDumpKey)
 	if err != nil {
@@ -114,7 +116,10 @@ func (storage *Storage) Dump(raw_message []byte) {
 	// Loop through all stored data
 	for _, value := range storage.Data {
 		// Add the DumpKey to the object
-		dumpValue, err := storage.ChangeMessageKey(value, "DumpKey", message.DumpKey)
+		dumpValue, err := storage.ChangeMessageKey(value,
+			"Method", "DumpRecv",
+			"DumpKey", message.DumpKey,
+		)
 		if err != nil {
 			fmt.Println(err)
 			continue

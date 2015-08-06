@@ -39,8 +39,8 @@ make_api.prototype.onmessage = function (data) {
 }
 
 make_api.prototype.send = function (data) {
-	if (this.connected) {
-		data = JSON.stringify(data)
-		this.ws.send(data)
-	}
+  if (this.connected) {
+    data = JSON.stringify(data)
+    this.ws.send(data)
+  }
 }

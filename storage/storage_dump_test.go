@@ -40,7 +40,7 @@ func TestStorageDump(t *testing.T) {
 	// Get all of the data in storeage
 	savedData := clientTest.AllData()
 	if numSaved != len(savedData) {
-		// panic("")
+		panic("All of the items we sent weren't saved!!")
 	}
-	fmt.Println(len(savedData), numSaved)
+	log.Println(savedData)
 }

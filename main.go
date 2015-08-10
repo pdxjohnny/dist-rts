@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/GeertJohan/go.rice"
 	"github.com/pdxjohnny/easysock"
 
 	"github.com/pdxjohnny/dist-rts/config"
@@ -13,7 +12,8 @@ import (
 func Run() error {
 	conf := config.Load()
 	go easysock.Hub.Run()
-	http.Handle("/", http.FileServer(rice.MustFindBox("static").HTTPBox()))
+	fs := http.FileServer(http.Dir("static"))
+  http.Handle("/", fs)
 	http.HandleFunc("/ws", easysock.ServeWs)
 	port := fmt.Sprintf(":%s", conf.Port)
 	err := http.ListenAndServe(port, nil)

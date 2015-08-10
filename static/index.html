@@ -65,7 +65,7 @@ Author: John Andersen
 	background-color: rgba(255, 255, 255, 0.6);
 	color: black;">
 	<input id="playername" value="player1" ></input>
-	<button type="button" name="button" onclick="main_game.control(document.getElementById('playername').value);" >Change control</button>
+	<button onclick="add_and_control();" >Start</button>
 </div>
 <div id="bottom_bar" style="
 	position: fixed;
@@ -87,6 +87,9 @@ main_game = new space("game_canvas");
 main_game.api_setup();
 main_game.start();
 
-main_game.add_player("player1");
-main_game.add_player("player2");
+function add_and_control() {
+	var new_player = document.getElementById('playername').value;
+	main_game.add_player(new_player);
+	main_game.control(new_player);
+}
 </script>

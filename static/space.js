@@ -18,6 +18,16 @@ var space = function space(canvas_div_id) {
 space.prototype = new game();
 space.prototype.constructor = space;
 
+space.prototype.api_setup = function () {
+  api.startsender();
+  api.Update = function (data) {
+    if (typeof this.all[data["Id"]] === "undefined") {
+      this.add_player(data["Id"]);
+    }
+    this.all[data["Id"]].stats = data;
+  }.bind(this);
+}
+
 space.prototype.stop = function () {
   this.running = false;
   if (this.player) {

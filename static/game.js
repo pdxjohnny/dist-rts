@@ -9,13 +9,6 @@ var game = function game() {
   return this;
 }
 
-game.prototype.api_setup = function () {
-  api.startsender();
-  api.Update = function (data) {
-    this.all[data["Id"]].stats = data;
-  }.bind(this);
-}
-
 game.prototype.set_canvas = function (canvas_div_id) {
   this.canvas_div = document.getElementById(canvas_div_id);
   if (this.canvas_div) {

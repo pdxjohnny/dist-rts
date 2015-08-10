@@ -40,4 +40,13 @@ Testing
 
 To run tests the Websocket server must be up.
 
+Docker
+---
+
+Running with Docker
+```bash
+./script/build
+docker run -p 8081:8081 pdxjohnny/dist-rts
+```
+
 [js-rts]: https://github.com/pdxjohnny/js-rts

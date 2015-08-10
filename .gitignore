@@ -1,0 +1,4 @@
+dist-rts*
+
+Godeps/_workspace
+Godeps/Readme

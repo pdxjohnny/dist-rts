@@ -46,8 +46,7 @@ make_api.prototype.send = function (data) {
     for (var message = 0; message < this.messages.length; message++) {
       if (this.sender) {
         this.async("send", this.messages[message])
-      }
-      else {
+      } else {
         this.messages[message] = JSON.stringify(this.messages[message]);
         this.ws.send(this.messages[message]);
       }

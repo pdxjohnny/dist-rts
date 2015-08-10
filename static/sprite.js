@@ -13,6 +13,7 @@ var sprite = function sprite() {
 
 sprite.prototype.key_down = function (event) {
   this.stats.keys_down[event.keyCode] = true;
+  this.stats.Method = "Update";
   api.send(this.stats)
 }
 
@@ -20,6 +21,7 @@ sprite.prototype.key_up = function (event) {
   if (event.keyCode in this.stats.keys_down) {
     delete this.stats.keys_down[event.keyCode];
   }
+  this.stats.Method = "Update";
   api.send(this.stats)
 }
 

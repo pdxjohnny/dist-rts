@@ -64,7 +64,8 @@ Author: John Andersen
 	z-index:99;
 	background-color: rgba(255, 255, 255, 0.6);
 	color: black;">
-
+	<input id="playername" value="player1" ></input>
+	<button type="button" name="button" onclick="main_game.control(document.getElementById('playername').value);" >Change control</button>
 </div>
 <div id="bottom_bar" style="
 	position: fixed;
@@ -83,9 +84,9 @@ Author: John Andersen
 </html>
 <script>
 main_game = new space("game_canvas");
+main_game.api_setup();
 main_game.start();
 
-main_game.add_player("other");
-main_game.add_player("pdxjohnny");
-main_game.control("pdxjohnny");
+main_game.add_player("player1");
+main_game.add_player("player2");
 </script>

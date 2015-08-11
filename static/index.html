@@ -55,6 +55,8 @@ Author: John Andersen
 	<script src="rts/camera.js" ></script>
 	<script src="rts/mouse.js" ></script>
 	<script src="rts/select.js" ></script>
+	<script src="rts/unit.js" ></script>
+	<script src="rts/structure.js" ></script>
 
 </head>
 
@@ -67,7 +69,10 @@ Author: John Andersen
 	z-index:99;
 	background-color: rgba(255, 255, 255, 0.6);
 	color: black;">
-	<input id="playername" value="player" ></input>
+	<input id="unit_url" value="units/" ></input>
+	<button onclick="main_game.load_units(document.getElementById('unit_url').value);" >Load</button>
+
+	<input id="playername" value="user" ></input>
 	<button onclick="add_and_control();" >Start</button>
 </div>
 <div id="bottom_bar" style="
@@ -84,11 +89,14 @@ Author: John Andersen
 
 <canvas id="game_canvas" ></canvas>
 
+<script id="unit_scripts_include"></script>
+<div id="unit_scripts"></div>
+
 </html>
 <script>
 main_game = new space("game_canvas");
 main_game.api_setup();
-main_game.start();
+// main_game.start();
 
 document.getElementById('playername').value += Math.floor((Math.random() * 100) + 1);
 

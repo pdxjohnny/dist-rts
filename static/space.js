@@ -67,6 +67,13 @@ space.prototype.add_camera = function (name) {
   return add;
 }
 
+space.prototype.load_units = function (url) {
+  var unit_scripts_include = document.getElementById("unit_scripts_include");
+  this.load_url = url;
+  window.load_url = this.load_url;
+  unit_scripts_include.src = this.load_url  + "include.js";
+}
+
 
 
 

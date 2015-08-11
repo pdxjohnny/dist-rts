@@ -24,7 +24,7 @@ space.prototype.api_setup = function () {
     if (typeof this.all[data["Id"]] === "undefined") {
       this.add_player(data["Id"]);
     }
-    this.all[data["Id"]].stats = data;
+    this.all[data["Id"]].update_stats(data);
   }.bind(this);
 }
 
@@ -56,6 +56,15 @@ space.prototype.add_player = function (name) {
   var add = new player(name);
   this.all[name] = add;
   this.middle[name] = add;
+  return add;
+}
+
+space.prototype.add_camera = function (name) {
+  // var add = new player(name);
+  var add = new camera(name);
+  this.all[name] = add;
+  this.middle[name] = add;
+  return add;
 }
 
 

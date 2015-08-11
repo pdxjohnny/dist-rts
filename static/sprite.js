@@ -9,12 +9,15 @@ var sprite = function sprite() {
   this.x = 0;
   this.y = 0;
   this.angle = 0;
+  this.selected = false;
 }
 
 sprite.prototype.key_down = function (event) {
   this.stats.keys_down[event.keyCode] = true;
   this.stats.Method = "Update";
-  api.send(this.stats)
+  if (this.show) {
+    api.send(this.stats);
+  }
 }
 
 sprite.prototype.key_up = function (event) {
@@ -22,7 +25,9 @@ sprite.prototype.key_up = function (event) {
     delete this.stats.keys_down[event.keyCode];
   }
   this.stats.Method = "Update";
-  api.send(this.stats)
+  if (this.show) {
+    api.send(this.stats);
+  }
 }
 
 sprite.prototype.draw = function (ctx) {
@@ -32,6 +37,13 @@ sprite.prototype.draw = function (ctx) {
     ctx.drawRotatedImage(this.image, this.x,
       this.y, this.angle);
     this.draw_shields(ctx);
+  }
+  if (this.selected) {
+    ctx.drawRotatedRect(this.x - this.image.width / 2,
+      this.y - this.image.height / 2,
+      this.image.width,
+      this.image.height,
+      "#33CC33");
   }
 }
 

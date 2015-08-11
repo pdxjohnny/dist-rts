@@ -3,29 +3,27 @@
 class player extends sprite {
   constructor(name) {
     super(name);
-    this.stats = {};
     this.stats.Id = name;
-    this.image = new Image();
     this.load();
     this.key_down_event = this.create_key_down_event();
     this.key_up_event = this.create_key_up_event();
   }
-  center (canvas_div) {
+  center(canvas_div) {
     this.x = canvas_div.width / 2;
     this.y = canvas_div.height / 2;
   }
-  start_movement (canvas_div) {
+  start_movement(canvas_div) {
     this.moving = true;
     this.center(canvas_div);
     document.addEventListener("keydown", this.key_down_event);
     document.addEventListener("keyup", this.key_up_event);
   }
-  stop_movement () {
+  stop_movement() {
     this.moving = false;
     document.removeEventListener("keydown", this.key_down_event);
     document.removeEventListener("keyup", this.key_up_event);
   }
-  create_key_down_event () {
+  create_key_down_event() {
     return function (player) {
       var handler = function (event) {
         player.key_down(event);
@@ -33,7 +31,7 @@ class player extends sprite {
       return handler;
     }(this);
   }
-  create_key_up_event () {
+  create_key_up_event() {
     return function (player) {
       var handler = function (event) {
         player.key_up(event);
@@ -41,7 +39,7 @@ class player extends sprite {
       return handler;
     }(this);
   }
-  save () {
+  save() {
     db[stats_database].put(this.stats, function (player) {
       return function (error, result) {
         if (!error) {
@@ -53,7 +51,7 @@ class player extends sprite {
       }
     }(this));
   }
-  load (load_image) {
+  load(load_image) {
     var stats = {
       Id: this.stats.Id,
       ship: "default",
@@ -71,7 +69,7 @@ class player extends sprite {
     this.update_stats(stats);
     return stats;
   }
-  update_stats (stats) {
+  update_stats(stats) {
     this.stats = stats;
     if (typeof this.stats.image !== "undefined" &&
       this.stats.image != false) {

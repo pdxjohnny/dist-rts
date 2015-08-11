@@ -46,7 +46,7 @@ Docker
 Running with Docker
 ```bash
 ./script/build
-docker run -p 8081:8081 pdxjohnny/dist-rts
+docker run -d -p 8081:8081 pdxjohnny/dist-rts
 ```
 
 [js-rts]: https://github.com/pdxjohnny/js-rts

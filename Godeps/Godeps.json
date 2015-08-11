@@ -1,26 +1,29 @@
 {
 	"ImportPath": "github.com/pdxjohnny/dist-rts",
 	"GoVersion": "go1.4.2",
+	"Packages": [
+		"./..."
+	],
 	"Deps": [
-		{
-			"ImportPath": "github.com/GeertJohan/go.rice",
-			"Rev": "ada95a01c963696fb73320ee662195af68be81ae"
-		},
-		{
-			"ImportPath": "github.com/daaku/go.zipexe",
-			"Rev": "a5fe2436ffcb3236e175e5149162b41cd28bd27d"
-		},
 		{
 			"ImportPath": "github.com/gorilla/websocket",
 			"Rev": "6eb6ad425a89d9da7a5549bc6da8f79ba5c17844"
 		},
 		{
-			"ImportPath": "github.com/kardianos/osext",
-			"Rev": "6e7f843663477789fac7c02def0d0909e969b4e5"
-		},
-		{
 			"ImportPath": "github.com/pdxjohnny/easysock",
 			"Rev": "6b491a2da3653867e3f7a26823e926750c70259c"
+		},
+		{
+			"ImportPath": "github.com/pdxjohnny/microsocket/client",
+			"Rev": "b8236cf6a34fd3a0714698b1e1e116b89b2b03ad"
+		},
+		{
+			"ImportPath": "github.com/pdxjohnny/microsocket/random",
+			"Rev": "b8236cf6a34fd3a0714698b1e1e116b89b2b03ad"
+		},
+		{
+			"ImportPath": "github.com/pdxjohnny/microsocket/service",
+			"Rev": "b8236cf6a34fd3a0714698b1e1e116b89b2b03ad"
 		}
 	]
 }

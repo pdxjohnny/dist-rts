@@ -13,7 +13,7 @@ func Run() error {
 	conf := config.Load()
 	go easysock.Hub.Run()
 	fs := http.FileServer(http.Dir("static"))
-  http.Handle("/", fs)
+	http.Handle("/", fs)
 	http.HandleFunc("/ws", easysock.ServeWs)
 	port := fmt.Sprintf(":%s", conf.Port)
 	err := http.ListenAndServe(port, nil)

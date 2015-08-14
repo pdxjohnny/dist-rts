@@ -9,9 +9,9 @@ var space = function space(canvas_div_id) {
   this.middle = {};
   this.back = {};
   this.updates = {
-    'adjust_to_player': this.adjust_to_player.bind(this)
+    'adjust_to_controlling': this.adjust_to_controlling.bind(this)
   };
-  this.player = false;
+  this.controlling = false;
   this.back['background'] = new space_background(this);
   this.back['background'].color = '#0B173B';
   this.back['stars'] = new star_field(this);
@@ -23,43 +23,36 @@ space.prototype.constructor = space;
 
 space.prototype.api_setup = function () {
   api.startsender();
-  api.Update = function (data) {
-    if (typeof this.all[data["Id"]] === "undefined") {
-      this.add_player(data["Id"]);
-    }
-    this.all[data["Id"]].update_stats(data);
-  }.bind(this);
+  api.Update = this.Update.bind(this);
 }
 
 space.prototype.stop = function () {
   this.running = false;
-  if (this.player) {
-    this.player.stop_movement();
+  if (this.controlling) {
+    this.controlling.stop_movement();
   }
 }
 
-space.prototype.adjust_to_player = function () {
-  if (this.player) {
+space.prototype.adjust_to_controlling = function () {
+  if (this.controlling) {
     for (var object in this.middle) {
-      this.middle[object].x = (this.middle[object].stats.x - this.player.stats.x) + this.player.x;
-      this.middle[object].y = (this.middle[object].stats.y - this.player.stats.y) + this.player.y;
+      this.middle[object].x = (this.middle[object].stats.x - this.controlling.stats.x) + this.controlling.x;
+      this.middle[object].y = (this.middle[object].stats.y - this.controlling.stats.y) + this.controlling.y;
     }
   }
 }
 
 space.prototype.control = function (name) {
-  if (this.player) {
-    this.player.stop_movement();
+  if (this.controlling) {
+    this.controlling.stop_movement();
   }
-  this.player = this.all[name];
-  this.player.start_movement(this.canvas_div);
+  this.controlling = this.all[name];
+  this.controlling.start_movement(this.canvas_div);
 }
 
-space.prototype.add_player = function (name) {
-  var add = new player(name);
-  this.all[name] = add;
-  this.middle[name] = add;
-  return add;
+space.prototype.start_player = function (name) {
+  this.add_camera(name);
+  this.control(name);
 }
 
 space.prototype.add_camera = function (name) {
@@ -69,12 +62,18 @@ space.prototype.add_camera = function (name) {
   return add;
 }
 
-space.prototype.create_unit = function (unit) {
-  console.log(window.unit_types[unit.type]);
-  // var add = new camera(name);
-  // this.all[name] = add;
-  // this.middle[name] = add;
-  // return add;
+space.prototype.add_unit = function (name, type) {
+  var add = new type(name);
+  this.all[name] = add;
+  this.middle[name] = add;
+  return add;
+}
+
+space.prototype.Update = function (unit) {
+  if (typeof this.all[data["Id"]] === "undefined") {
+    this.add_unit(data["Id"], window.unit_types[unit.type]);
+  }
+  this.all[data["Id"]].update_stats(data);
 }
 
 space.prototype.load_units = function (url) {

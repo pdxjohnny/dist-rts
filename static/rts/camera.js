@@ -1,6 +1,6 @@
 "use strict";
 
-class camera extends player {
+class camera extends unit {
   constructor(name) {
     super(name);
     this.show = false;

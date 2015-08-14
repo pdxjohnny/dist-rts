@@ -31,15 +31,15 @@ star_field.prototype.draw = function (ctx) {
 
 star_field.prototype.update = function (modifier) {
   this.blink(modifier);
-  if ((this.game.canvas_div && this.game.player &&
-      typeof this.game.player.stats.speed !== 'undefined' &&
-      typeof this.game.player.stats.x !== 'undefined' &&
-      typeof this.game.player.stats.y !== 'undefined') &&
-    ((this.game.player.angle_of() &&
-      Object.keys(this.game.player.stats.keys_down).length > 0) || this.game.player.stats.speed > 0)) {
+  if ((this.game.canvas_div && this.game.controlling &&
+      typeof this.game.controlling.stats.speed !== 'undefined' &&
+      typeof this.game.controlling.stats.x !== 'undefined' &&
+      typeof this.game.controlling.stats.y !== 'undefined') &&
+    ((this.game.controlling.angle_of() &&
+      Object.keys(this.game.controlling.stats.keys_down).length > 0) || this.game.controlling.stats.speed > 0)) {
     for (var star in this.stars) {
-      this.stars[star].x -= Math.cos(this.game.player.angle * Math.PI / 180) * this.game.player.stats.speed * modifier;
-      this.stars[star].y -= Math.sin(this.game.player.angle * Math.PI / 180) * this.game.player.stats.speed * modifier;
+      this.stars[star].x -= Math.cos(this.game.controlling.angle * Math.PI / 180) * this.game.controlling.stats.speed * modifier;
+      this.stars[star].y -= Math.sin(this.game.controlling.angle * Math.PI / 180) * this.game.controlling.stats.speed * modifier;
       var prev_x = this.stars[star].x,
         prev_y = this.stars[star].y;
       if (this.stars[star].x < 0) {

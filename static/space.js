@@ -1,3 +1,6 @@
+window.unit_types = {};
+window.units_loaded = false;
+
 var space = function space(canvas_div_id) {
   this.set_canvas(canvas_div_id);
   this.full_screen();
@@ -60,11 +63,18 @@ space.prototype.add_player = function (name) {
 }
 
 space.prototype.add_camera = function (name) {
-  // var add = new player(name);
   var add = new camera(name);
   this.all[name] = add;
   this.middle[name] = add;
   return add;
+}
+
+space.prototype.create_unit = function (unit) {
+  console.log(window.unit_types[unit.type]);
+  // var add = new camera(name);
+  // this.all[name] = add;
+  // this.middle[name] = add;
+  // return add;
 }
 
 space.prototype.load_units = function (url) {

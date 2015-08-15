@@ -29,8 +29,7 @@ class unit extends sprite {
   bind_key_up_event(event) {
     this.key_up(event);
   }
-  save() {
-  }
+  save() {}
   load(load_image) {
     var stats = {
       Id: this.stats.Id,

@@ -22,6 +22,7 @@ make_api.prototype.connect = function () {
 
 make_api.prototype.onopen = function (data) {
   this.connected = true;
+  this.sendall();
 }
 
 make_api.prototype.onclose = function (data) {
@@ -41,7 +42,11 @@ make_api.prototype.onmessage = function (data) {
 }
 
 make_api.prototype.send = function (data) {
-  this.messages.push(data)
+  this.messages.push(data);
+  this.sendall();
+}
+
+make_api.prototype.sendall = function (data) {
   if (this.connected) {
     for (var message = 0; message < this.messages.length; message++) {
       if (this.sender) {

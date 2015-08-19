@@ -13,6 +13,8 @@ class player {
   spawn() {
     // Create the player's first camera
     var first_camera = this.add_camera();
+    // Create the players base
+    this.create_unit("main_base", "structure_base");
   }
   add_camera(name) {
     if (typeof name === "undefined") {
@@ -31,6 +33,14 @@ class player {
   }
   add_unit(add) {
     this.units[add.stats.Id] = add;
+    this.game.add_unit(add);
+    return add;
+  }
+  create_unit(name, type) {
+    name = this.Id + "_" + name;
+    type = window.unit_types[type];
+    var add = new type(name);
+    this.add_unit(add);
     return add;
   }
 }

@@ -1,5 +1,6 @@
 window.unit_types = {};
 window.units_loaded = false;
+window.on_units_loaded = false;
 
 var space = function space(canvas_div_id) {
   this.set_canvas(canvas_div_id);
@@ -52,8 +53,16 @@ space.prototype.control = function (name) {
 }
 
 space.prototype.start_player = function (name) {
-  this.player = new player(name, this);
-  this.player.spawn();
+  var create_and_spawn = function () {
+    this.player = new player(name, this);
+    this.player.spawn();
+  }
+  create_and_spawn = create_and_spawn.bind(this);
+  if (window.units_loaded) {
+    create_and_spawn();
+  } else {
+    window.on_units_loaded = create_and_spawn;
+  }
 }
 
 space.prototype.add_camera = function (name) {

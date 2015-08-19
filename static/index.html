@@ -70,7 +70,7 @@ Author: John Andersen
 	background-color: rgba(255, 255, 255, 0.6);
 	color: black;">
 	<input id="unit_url" value="units/" ></input>
-	<button onclick="main_game.load_units(document.getElementById('unit_url').value);" >Load</button>
+	<button onclick="load_units();" >Load</button>
 
 	<input id="playername" value="user" ></input>
 	<button onclick="add_and_control();" >Start</button>
@@ -100,7 +100,13 @@ main_game.start();
 
 document.getElementById('playername').value += Math.floor((Math.random() * 100) + 1);
 
+function load_units() {
+	var load_url = document.getElementById('unit_url').value;
+	main_game.load_units(load_url);
+}
+
 function add_and_control() {
+	load_units();
 	var new_player = document.getElementById('playername').value;
 	main_game.start_player(new_player);
 }

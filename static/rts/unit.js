@@ -33,7 +33,7 @@ class unit extends sprite {
   load(load_image) {
     var stats = {
       Id: this.stats.Id,
-      type: "unit",
+      type: this.constructor.name,
       image: "assets/unit.png",
       keys_down: {},
       x: 0,

@@ -65,13 +65,6 @@ space.prototype.start_player = function (name) {
   }
 }
 
-space.prototype.add_camera = function (name) {
-  var add = new camera(name);
-  this.all[name] = add;
-  this.middle[name] = add;
-  return add;
-}
-
 space.prototype.add_unit = function (add) {
   this.all[add.stats.Id] = add;
   this.middle[add.stats.Id] = add;
@@ -80,9 +73,7 @@ space.prototype.add_unit = function (add) {
 
 space.prototype.create_unit = function (name, type) {
   var add = new type(name);
-  this.all[name] = add;
-  this.middle[name] = add;
-  return add;
+  return this.add_unit(add);
 }
 
 space.prototype.Update = function (unit) {

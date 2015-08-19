@@ -40,7 +40,6 @@ class player {
     name = this.Id + "_" + name;
     type = window.unit_types[type];
     var add = new type(name);
-    this.add_unit(add);
-    return add;
+    return this.add_unit(add);
   }
 }

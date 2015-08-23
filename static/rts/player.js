@@ -9,6 +9,8 @@ class player {
     this.units = {};
     // The game
     this.game = running_game;
+    // Manages selected units
+    this.select = new selector(this);
   }
   spawn() {
     // Create the player's first camera

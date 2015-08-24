@@ -1,8 +1,7 @@
 "use strict";
 
 class make_extra {
-  constructor() {
-  }
+  constructor() {}
   get_mouse_pos(event) {
     var x;
     var y;

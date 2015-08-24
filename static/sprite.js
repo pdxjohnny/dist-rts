@@ -194,14 +194,13 @@ class sprite {
     return this.selected;
   }
   set_dest(dest) {
-    console.log(this.stats.dest, dest);
     this.stats.dest = dest;
     var x = this.stats.x - this.stats.dest.x;
     var y = this.stats.y - this.stats.dest.y;
-    // var angle = Math.atan(y / x) / Math.PI * 180;
-    var angle = Math.atan(y / x) * (180 / Math.PI);
-    // angle += 360;
-    console.log(x, y, angle);
+    var angle = Math.atan(y / x) / Math.PI * 180;
+    if (this.stats.dest.x <= this.stats.x) {
+      angle += 180;
+    }
     this.angle_to_dest = angle;
   }
 }

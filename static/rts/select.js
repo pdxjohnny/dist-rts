@@ -22,31 +22,37 @@ class selector {
       this.select_mousedown.bind(this));
   }
   set_dest() {
+    var dest = clone(this.dest);
     for (var i in this.selected) {
-      this.selected[i]["dest"] = clone(this.dest);
+      console.log("Setting destination");
+      this.selected[i].stats.dest = dest;
     }
   }
   single_select(event) {
     this.set_dest();
     this.unselect_all();
+    this.multi_select(event);
     var any_selected = false;
     var mouseAt = this.get_mouse_pos(event);
     for (var i in this.player.units) {
       if (this.on_cords(mouseAt, this.player.units[i])) {
-        this.player.units[i]["selected"] = true;
-        this.selected[i] = this.player.units[i];
+        this.select(this.player.units[i]);
         any_selected = true;
       }
     }
     if (!any_selected) {
-      console.log("Setting destination");
       // this.dest = this.get_real_pos(mouseAt);
     }
   }
 
+  select(unit) {
+    unit.select(true);
+    this.selected[i] = unit;
+  }
+
   unselect_all() {
     for (var i in this.selected) {
-      this.selected[i]["selected"] = false;
+      this.selected[i].select(false);
       delete this.selected[i];
     }
     this.dest = {};
@@ -64,16 +70,11 @@ class selector {
   multi_select_mouseup(event) {
     for (var i in this.player.units) {
       if (this.in_cords(this.selectBoxStart, this.selectBoxEnd, this.player.units[i])) {
-        if (this.player.units[i]["selected"]) {
-          this.player.units[i].dest = {};
-        } else {
-          this.player.units[i]["selected"] = true;
-          delete this.player.units[i].path;
-        }
+        this.select(this.player.units[i]);
       }
     }
-    this.selectBoxStart = false;
-    this.selectBoxEnd = false;
+    this.selectBoxStart = {};
+    this.selectBoxEnd = {};
     // Remove multi_select listeners
     document.removeEventListener("mousemove",
       this.multi_select_mousemove.bind(this));
@@ -90,7 +91,6 @@ class selector {
     switch (event.which) {
     case 1:
       this.single_select(event);
-      this.multi_select(event);
       break;
     case 2:
       console.log("Middle Mouse button pressed.");

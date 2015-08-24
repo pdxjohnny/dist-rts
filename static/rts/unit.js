@@ -36,6 +36,7 @@ class unit extends sprite {
       type: this.constructor.name,
       image: "assets/unit.png",
       keys_down: {},
+      dest: {},
       x: 0,
       y: 0,
       max_speed: 200,

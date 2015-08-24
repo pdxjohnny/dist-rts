@@ -1,13 +1,12 @@
 "use strict";
 
-class unit extends controllable {
+class controllable extends sprite {
   constructor(name) {
     super(name);
     this.stats.Id = name;
     this.load();
     this.key_down_event = this.bind_key_down_event.bind(this);
     this.key_up_event = this.bind_key_up_event.bind(this);
-    this.send_update();
   }
   center(canvas_div) {
     this.x = canvas_div.width / 2;

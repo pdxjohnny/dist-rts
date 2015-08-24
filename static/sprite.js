@@ -19,17 +19,17 @@ class sprite {
   }
   key_down(event) {
     this.stats.keys_down[event.keyCode] = true;
-    this.stats.Method = "Update";
-    if (this.show) {
-      api.send(this.stats);
-    }
+    this.send_update();
   }
   key_up(event) {
     if (event.keyCode in this.stats.keys_down) {
       delete this.stats.keys_down[event.keyCode];
     }
-    this.stats.Method = "Update";
+    this.send_update();
+  }
+  send_update() {
     if (this.show) {
+      this.stats.Method = "Update";
       api.send(this.stats);
     }
   }
@@ -202,5 +202,6 @@ class sprite {
       angle += 180;
     }
     this.angle_to_dest = angle;
+    this.send_update();
   }
 }

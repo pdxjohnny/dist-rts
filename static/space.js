@@ -78,15 +78,15 @@ space.prototype.add_unit = function (add) {
 }
 
 space.prototype.create_unit = function (name, type) {
-  var add = new type(name);
+  var add = new (window.unit_types[type])(name);
   return this.add_unit(add);
 }
 
 space.prototype.Update = function (unit) {
-  if (typeof this.all[data["Id"]] === "undefined") {
-    this.create_unit(data["Id"], window.unit_types[unit.type]);
+  if (typeof this.all[unit["Id"]] === "undefined") {
+    this.create_unit(unit["Id"], unit.type);
   }
-  this.all[data["Id"]].update_stats(data);
+  this.all[unit["Id"]].update_stats(unit);
 }
 
 space.prototype.load_units = function (url) {

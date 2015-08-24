@@ -1,6 +1,6 @@
 "use strict";
 
-class camera extends unit {
+class camera extends controllable {
   constructor(name) {
     super(name);
     this.show = false;

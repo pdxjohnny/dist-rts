@@ -14,6 +14,7 @@ class sprite {
     this.x = 0;
     this.y = 0;
     this.angle = 0;
+    this.angle_to_dest = false;
     this.selected = false;
   }
   key_down(event) {
@@ -141,12 +142,18 @@ class sprite {
       else if (39 in this.stats.keys_down || 68 in this.stats.keys_down) {
         return 360;
       }
-    } else if (Object.keys(this.stats.dest).length > 0) {
-      var x = this.stats.dest.x - this.stats.x;
-      var y = this.stats.dest.y - this.stats.y;
-      var angle = Math.atan(x, y) / Math.PI * 180;
-      console.log(x, y, angle);
-      return angle;
+    } else if (Object.keys(this.stats.dest).length > 0 &&
+      this.angle_to_dest != false) {
+      var check_cords = {
+        x: this.stats.x,
+        y: this.stats.y,
+        image: this.image,
+      };
+      // Check if we are at the destination
+      if (extra.on_cords(this.stats.dest, check_cords)) {
+        this.angle_to_dest = false;
+      }
+      return this.angle_to_dest;
     }
     return false;
   }
@@ -189,5 +196,12 @@ class sprite {
   set_dest(dest) {
     console.log(this.stats.dest, dest);
     this.stats.dest = dest;
+    var x = this.stats.x - this.stats.dest.x;
+    var y = this.stats.y - this.stats.dest.y;
+    // var angle = Math.atan(y / x) / Math.PI * 180;
+    var angle = Math.atan(y / x) * (180 / Math.PI);
+    // angle += 360;
+    console.log(x, y, angle);
+    this.angle_to_dest = angle;
   }
 }

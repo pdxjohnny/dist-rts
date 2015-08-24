@@ -8,11 +8,11 @@ class selector {
     this.selected = {};
     // The player using this selector
     this.player = parent_player;
-    // Use the games get mouse position functions
-    this.get_mouse_pos = this.player.game.get_mouse_pos.bind(this.player.game);
+    // Use the game and extra to get mouse position functions
     this.get_real_pos = this.player.game.get_real_pos.bind(this.player.game);
-    this.on_cords = this.player.game.on_cords.bind(this.player.game);
-    this.in_cords = this.player.game.in_cords.bind(this.player.game);
+    this.get_mouse_pos = extra.get_mouse_pos.bind(extra);
+    this.on_cords = extra.on_cords.bind(extra);
+    this.in_cords = extra.in_cords.bind(extra);
     // For select box
     this.selectBoxStart = {};
     this.selectBoxEnd = {};
@@ -23,7 +23,7 @@ class selector {
   }
   set_dest() {
     if (Object.keys(this.dest).length > 0) {
-      var dest = clone(this.dest);
+      var dest = extra.clone(this.dest);
       for (var i in this.selected) {
         console.log("Setting destination");
         this.selected[i].set_dest(dest);
@@ -44,8 +44,7 @@ class selector {
       this.dest = this.get_real_pos(mouseAt);
       this.set_dest();
       this.unselect_all();
-    }
-    else {
+    } else {
       this.dest = {};
     }
   }

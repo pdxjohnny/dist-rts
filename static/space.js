@@ -44,6 +44,12 @@ space.prototype.adjust_to_controlling = function () {
   }
 }
 
+space.prototype.get_real_pos = function (object) {
+  object.x = (object.x - this.controlling.x) + this.controlling.stats.x;
+  object.y = (object.y - this.controlling.y) + this.controlling.stats.y;
+  return object;
+}
+
 space.prototype.control = function (name) {
   if (this.controlling) {
     this.controlling.stop_movement();

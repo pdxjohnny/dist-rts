@@ -54,52 +54,50 @@ class sprite {
       typeof this.stats.x !== 'undefined' &&
       typeof this.stats.y !== 'undefined' &&
       this.angle_of()) {
-      if (Object.keys(this.stats.keys_down).length > 0) {
-        if (this.stats.speed < 0) {
-          this.stats.speed = 0;
-        }
-        if (this.stats.acceleration == false) {
-          this.stats.speed = this.stats.max_speed;
-        } else if (this.stats.warp && this.stats.speed + this.stats.acceleration <= this.stats.max_warp) {
-          this.stats.speed += this.stats.acceleration;
-        } else if (this.stats.speed + this.stats.acceleration <= this.stats.max_speed) {
-          this.stats.speed += this.stats.acceleration * 2 * modifier;
-        }
-        var to_angle = this.angle_of() - this.angle;
-        if (to_angle < 0) {
-          if (to_angle <= -360) {
-            this.angle += to_angle;
-          }
-          if (to_angle < -180) {
-            this.angle += this.stats.rate_of_turn / 10;
-          } else {
-            this.angle -= this.stats.rate_of_turn / 10;
-          }
-        } else if (to_angle > 0) {
-          if (to_angle >= 360) {
-            this.angle += to_angle;
-          }
-          if (to_angle > 180) {
-            this.angle -= this.stats.rate_of_turn / 10;
-          } else {
-            this.angle += this.stats.rate_of_turn / 10;
-          }
-        }
-        this.stats.x += Math.cos(this.angle * Math.PI / 180) * this.stats.speed * modifier;
-        this.stats.y += Math.sin(this.angle * Math.PI / 180) * this.stats.speed * modifier;
-        return true;
-      } else if (this.stats.speed > 0) {
-        if (this.stats.warp) {
-          this.stats.speed -= this.stats.acceleration;
-        } else if (this.stats.acceleration == false) {
-          this.stats.speed = 0;
-        } else {
-          this.stats.speed -= this.stats.acceleration * 2 * modifier;
-        }
-        this.stats.x += Math.cos(this.angle * Math.PI / 180) * this.stats.speed * modifier;
-        this.stats.y += Math.sin(this.angle * Math.PI / 180) * this.stats.speed * modifier;
-        return true;
+      if (this.stats.speed < 0) {
+        this.stats.speed = 0;
       }
+      if (this.stats.acceleration == false) {
+        this.stats.speed = this.stats.max_speed;
+      } else if (this.stats.warp && this.stats.speed + this.stats.acceleration <= this.stats.max_warp) {
+        this.stats.speed += this.stats.acceleration;
+      } else if (this.stats.speed + this.stats.acceleration <= this.stats.max_speed) {
+        this.stats.speed += this.stats.acceleration * 2 * modifier;
+      }
+      var to_angle = this.angle_of() - this.angle;
+      if (to_angle < 0) {
+        if (to_angle <= -360) {
+          this.angle += to_angle;
+        }
+        if (to_angle < -180) {
+          this.angle += this.stats.rate_of_turn / 10;
+        } else {
+          this.angle -= this.stats.rate_of_turn / 10;
+        }
+      } else if (to_angle > 0) {
+        if (to_angle >= 360) {
+          this.angle += to_angle;
+        }
+        if (to_angle > 180) {
+          this.angle -= this.stats.rate_of_turn / 10;
+        } else {
+          this.angle += this.stats.rate_of_turn / 10;
+        }
+      }
+      this.stats.x += Math.cos(this.angle * Math.PI / 180) * this.stats.speed * modifier;
+      this.stats.y += Math.sin(this.angle * Math.PI / 180) * this.stats.speed * modifier;
+      return true;
+    } else if (this.stats.speed > 0) {
+      if (this.stats.warp) {
+        this.stats.speed -= this.stats.acceleration;
+      } else if (this.stats.acceleration == false) {
+        this.stats.speed = 0;
+      } else {
+        this.stats.speed -= this.stats.acceleration * 2 * modifier;
+      }
+      this.stats.x += Math.cos(this.angle * Math.PI / 180) * this.stats.speed * modifier;
+      this.stats.y += Math.sin(this.angle * Math.PI / 180) * this.stats.speed * modifier;
+      return true;
     } else {
       return false;
     }
@@ -144,7 +142,11 @@ class sprite {
         return 360;
       }
     } else if (Object.keys(this.stats.dest).length > 0) {
-
+      var x = this.stats.dest.x - this.stats.x;
+      var y = this.stats.dest.y - this.stats.y;
+      var angle = Math.atan(x, y) / Math.PI * 180;
+      console.log(x, y, angle);
+      return angle;
     }
     return false;
   }
@@ -183,5 +185,9 @@ class sprite {
       this.selected = is_selected;
     }
     return this.selected;
+  }
+  set_dest(dest) {
+    console.log(this.stats.dest, dest);
+    this.stats.dest = dest;
   }
 }

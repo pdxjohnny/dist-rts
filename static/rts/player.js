@@ -17,6 +17,8 @@ class player {
     var first_camera = this.add_camera();
     // Create the players base
     this.create_unit("main_base", "structure_base");
+    // Initialize the selector
+    this.select.bind_clicks();
   }
   add_camera(name) {
     if (typeof name === "undefined") {

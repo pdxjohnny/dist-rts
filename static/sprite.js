@@ -38,13 +38,14 @@ class sprite {
       ctx.drawRotatedImage(this.image, this.x,
         this.y, this.angle);
       this.draw_shields(ctx);
-    }
-    if (this.selected) {
-      ctx.drawRotatedRect(this.x - this.image.width / 2,
-        this.y - this.image.height / 2,
-        this.image.width,
-        this.image.height,
-        "#33CC33");
+      if (this.selected) {
+        ctx.drawRotatedRect(this.x,
+          this.y,
+          this.image.width,
+          this.image.height,
+          this.angle); // ,
+        // "#33CC33");
+      }
     }
   }
   update(modifier) {

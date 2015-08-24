@@ -2,80 +2,52 @@
 
 class selector {
   constructor(parent_player) {
+    // Current destination
+    this.dest = {};
     // Units selected
     this.selected = {};
     // The player using this selector
     this.player = parent_player;
+    // Use the games get mouse position functions
+    this.get_mouse_pos = this.player.game.get_mouse_pos;
+    this.get_real_pos = this.player.game.get_real_pos;
+    this.on_cords = this.player.game.on_cords;
+    this.in_cords = this.player.game.in_cords;
+    // For select box
+    this.selectBoxStart = {};
+    this.selectBoxEnd = {};
+  }
+  bind_clicks() {
+    document.addEventListener("mousedown",
+      this.select_mousedown.bind(this));
+  }
+  set_dest() {
+    for (var i in this.selected) {
+      this.selected[i]["dest"] = clone(this.dest);
+    }
   }
   single_select(event) {
+    this.set_dest();
+    this.unselect_all();
+    var any_selected = false;
     var mouseAt = this.get_mouse_pos(event);
-    var none = true;
-    for (var i in this.all) {
-      if (this.on_cords(mouseAt, this.all[i])) {
-        if (this.all[i].selected) {
-          this.all[i].selected = false;
-          this.all[i].dest = {};
-          if (typeof this.all[i].show_options === "function")
-            this.all[i].show_options();
-        } else if (none) {
-          this.all[i].selected = true;
-          if (typeof this.all[i].show_options === "function")
-            this.all[i].show_options();
-          none = false;
-        }
+    for (var i in this.player.units) {
+      if (this.on_cords(mouseAt, this.player.units[i])) {
+        this.player.units[i]["selected"] = true;
+        this.selected[i] = this.player.units[i];
+        any_selected = true;
       }
     }
-    if (none) {
-      var atLeastOne = false;
-      for (var i in this.all) {
-        if (this.all[i].selected) atLeastOne = true;
-      }
-      if (atLeastOne) {
-        this.dest = mouseAt;
-        for (var i in this.all) {
-          if (this.all[i].selected &&
-            typeof this.dest.x !== "undefined" &&
-            typeof this.dest.y !== "undefined") {
-            this.all[i].dest = {};
-            this.all[i].dest.x = this.dest.x;
-            this.all[i].dest.y = this.dest.y;
-            delete this.all[i].path;
-          }
-        }
-      } else this.dest = {};
-    }
-  }
-
-  select_structure(event) {
-    var mouseAt = this.get_mouse_pos(event);
-    var none = true;
-    for (var i in this.structuresL) {
-      if (this.on_cords(mouseAt, this.structuresL[i])) {
-        if (this.structuresL[i].selected) {
-          this.structuresL[i].selected = false;
-        } else if (none) {
-          this.structuresL[i].selected = true;
-          this.structuresL[i].show_options();
-          none = false;
-        }
-      }
-    }
-    if (none) {
-      for (var i in this.structuresL) {
-        this.structuresL[i].selected = false;
-      }
-      //for ( var i in this.all ){
-      //this.all[i].selected = false;
-      //	}
+    if (!any_selected) {
+      console.log("Setting destination");
+      // this.dest = this.get_real_pos(mouseAt);
     }
   }
 
   unselect_all() {
-    for (var i in this.all) {
-      this.all[i].selected = false;
-    }
-    for (var i in this.structuresL) {
-      this.structuresL[i].selected = false;
+    for (var i in this.selected) {
+      this.selected[i]["selected"] = false;
+      delete this.selected[i];
     }
     this.dest = {};
   }
@@ -90,13 +62,13 @@ class selector {
   }
 
   multi_select_mouseup(event) {
-    for (var i in this.all) {
-      if (this.in_cords(this.selectBoxStart, this.selectBoxEnd, this.all[i])) {
-        if (this.all[i].selected) {
-          this.all[i].dest = {};
+    for (var i in this.player.units) {
+      if (this.in_cords(this.selectBoxStart, this.selectBoxEnd, this.player.units[i])) {
+        if (this.player.units[i]["selected"]) {
+          this.player.units[i].dest = {};
         } else {
-          this.all[i].selected = true;
-          delete this.all[i].path;
+          this.player.units[i]["selected"] = true;
+          delete this.player.units[i].path;
         }
       }
     }
@@ -119,16 +91,15 @@ class selector {
     case 1:
       this.single_select(event);
       this.multi_select(event);
-      this.select_structure(event);
       break;
     case 2:
-      console.log('Middle Mouse button pressed.');
+      console.log("Middle Mouse button pressed.");
       break;
     case 3:
       this.unselect_all();
       break;
     default:
-      console.log('You have a strange Mouse!');
+      console.log("You have a strange Mouse!");
     }
   }
 }

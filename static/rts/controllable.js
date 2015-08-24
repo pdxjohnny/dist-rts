@@ -57,6 +57,7 @@ class controllable extends sprite {
       this.show = true;
     }
     delete this.stats.image;
+    this.set_angle();
     // console.log(this.stats.Id + " loaded stats", this);
   }
 }

@@ -25,7 +25,6 @@ class selector {
     if (Object.keys(this.dest).length > 0) {
       var dest = extra.clone(this.dest);
       for (var i in this.selected) {
-        console.log("Setting destination");
         this.selected[i].set_dest(dest);
       }
     }

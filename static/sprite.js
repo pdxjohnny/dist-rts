@@ -193,15 +193,20 @@ class sprite {
     }
     return this.selected;
   }
+  set_angle() {
+    if (Object.keys(this.stats.dest).length > 0) {
+      var x = this.stats.x - this.stats.dest.x;
+      var y = this.stats.y - this.stats.dest.y;
+      var angle = Math.atan(y / x) / Math.PI * 180;
+      if (this.stats.dest.x <= this.stats.x) {
+        angle += 180;
+      }
+      this.angle_to_dest = angle;
+    }
+  }
   set_dest(dest) {
     this.stats.dest = dest;
-    var x = this.stats.x - this.stats.dest.x;
-    var y = this.stats.y - this.stats.dest.y;
-    var angle = Math.atan(y / x) / Math.PI * 180;
-    if (this.stats.dest.x <= this.stats.x) {
-      angle += 180;
-    }
-    this.angle_to_dest = angle;
+    this.set_angle();
     this.send_update();
   }
 }

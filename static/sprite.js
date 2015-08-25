@@ -6,11 +6,21 @@ class sprite {
     this.show = false;
     this.no_acceleration = false;
     this.stats = {
+      Id: "",
+      type: this.constructor.name,
+      image: "assets/unit.png",
       keys_down: {},
       dest: {},
       x: 0,
-      y: 0
+      y: 0,
+      max_speed: 200,
+      speed: 0,
+      acceleration: 30,
+      max_warp: 500,
+      warp: false,
+      rate_of_turn: 30,
     };
+    this.update_stats();
     this.x = 0;
     this.y = 0;
     this.angle = 0;
@@ -208,5 +218,18 @@ class sprite {
     this.stats.dest = dest;
     this.set_angle();
     this.send_update();
+  }
+  update_stats(stats) {
+    if (typeof stats !== "undefined") {
+      this.stats = stats;
+    }
+    if (typeof this.stats.image !== "undefined" &&
+      this.stats.image != false) {
+      this.image.src = this.stats.image;
+      this.show = true;
+    }
+    delete this.stats.image;
+    this.set_angle();
+    // console.log(this.stats.Id + " loaded stats", this);
   }
 }

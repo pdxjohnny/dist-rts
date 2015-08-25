@@ -83,10 +83,13 @@ space.prototype.create_unit = function (name, type) {
 }
 
 space.prototype.Update = function (unit) {
-  if (typeof this.all[unit["Id"]] === "undefined") {
-    this.create_unit(unit["Id"], unit.type);
+  // Make sure the unit types have been loaded
+  if (window.units_loaded) {
+    if (typeof this.all[unit["Id"]] === "undefined") {
+      this.create_unit(unit["Id"], unit.type);
+    }
+    this.all[unit["Id"]].update_stats(unit);
   }
-  this.all[unit["Id"]].update_stats(unit);
 }
 
 space.prototype.load_units = function (url) {

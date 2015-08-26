@@ -25,7 +25,9 @@ class player {
       name = this.Id + "_cam_" + (Object.keys(this.cameras).length + 1);
     }
     var add = new camera({
-      name: name
+      name: name,
+      game: this.game,
+      player: this,
     });
     this.cameras[name] = add;
     this.game.add_unit(add);
@@ -45,7 +47,10 @@ class player {
   create_unit(name, type, options) {
     name = this.Id + "_" + name;
     if (typeof options === "undefined") {
-      options = {};
+      options = {
+        game: this.game,
+        player: this,
+      };
     }
     options["name"] = name;
     var add = new(window.unit_types[type])(options);

@@ -210,6 +210,9 @@ class sprite {
     if (typeof is_selected !== "undefined") {
       this.selected = is_selected;
     }
+    if (typeof this.on_select === "function") {
+      this.on_select();
+    }
     return this.selected;
   }
   set_angle() {

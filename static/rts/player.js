@@ -42,12 +42,13 @@ class player {
     this.game.add_unit(add);
     return add;
   }
-  create_unit(name, type) {
+  create_unit(name, type, options) {
     name = this.Id + "_" + name;
-    type = window.unit_types[type];
-    var add = new type({
-      name: name
-    });
+    if (typeof options === "undefined") {
+      options = {};
+    }
+    options["name"] = name;
+    var add = new(window.unit_types[type])(options);
     return this.add_unit(add);
   }
 }

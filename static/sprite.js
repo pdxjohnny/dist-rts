@@ -26,6 +26,10 @@ class sprite {
     this.angle = 0;
     this.angle_to_dest = false;
     this.selected = false;
+    // Set all the other options
+    for (var prop in options) {
+      this[prop] = options[prop];
+    }
   }
   key_down(event) {
     this.stats.keys_down[event.keyCode] = true;
@@ -38,6 +42,10 @@ class sprite {
     this.send_update();
   }
   send_update() {
+    if (this.disable_first_update == true) {
+      this.disable_first_update = false;
+      return;
+    }
     if (this.show) {
       this.stats.Method = "Update";
       api.send(this.stats);
@@ -161,7 +169,7 @@ class sprite {
       };
       // Check if we are at the destination
       if (extra.on_cords(this.stats.dest, check_cords)) {
-        this.angle_to_dest = false;
+        this.at_dest();
       }
       return this.angle_to_dest;
     }
@@ -218,6 +226,10 @@ class sprite {
     this.stats.dest = dest;
     this.set_angle();
     this.send_update();
+  }
+  at_dest() {
+    this.stats.dest = {};
+    this.angle_to_dest = false;
   }
   update_stats(stats) {
     if (typeof stats !== "undefined") {

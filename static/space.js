@@ -77,10 +77,12 @@ space.prototype.add_unit = function (add) {
   return add;
 }
 
-space.prototype.create_unit = function (name, type) {
-  var add = new(window.unit_types[type])({
-    name: name
-  });
+space.prototype.create_unit = function (name, type, options) {
+  if (typeof options === "undefined") {
+    options = {};
+  }
+  options["name"] = name;
+  var add = new(window.unit_types[type])(options);
   return this.add_unit(add);
 }
 
@@ -88,7 +90,9 @@ space.prototype.Update = function (unit) {
   // Make sure the unit types have been loaded
   if (window.units_loaded) {
     if (typeof this.all[unit["Id"]] === "undefined") {
-      this.create_unit(unit["Id"], unit.type);
+      this.create_unit(unit["Id"], unit.type, {
+        disable_first_update: true,
+      });
     }
     this.all[unit["Id"]].update_stats(unit);
   }

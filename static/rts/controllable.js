@@ -12,6 +12,7 @@ class controllable extends sprite {
     this.y = canvas_div.height / 2;
   }
   start_movement(canvas_div) {
+    this.at_dest();
     this.moving = true;
     this.center(canvas_div);
     document.addEventListener("keydown", this.key_down_event);

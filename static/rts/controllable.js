@@ -1,9 +1,9 @@
 "use strict";
 
 class controllable extends sprite {
-  constructor(name) {
-    super(name);
-    this.stats.Id = name;
+  constructor(options) {
+    super(options);
+    this.stats.Id = options["name"];
     this.key_down_event = this.bind_key_down_event.bind(this);
     this.key_up_event = this.bind_key_up_event.bind(this);
   }

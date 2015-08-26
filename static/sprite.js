@@ -1,7 +1,7 @@
 "use strict";
 
 class sprite {
-  constructor() {
+  constructor(options) {
     this.image = new Image();
     this.show = false;
     this.no_acceleration = false;

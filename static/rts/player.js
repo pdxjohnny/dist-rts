@@ -24,7 +24,9 @@ class player {
     if (typeof name === "undefined") {
       name = this.Id + "_cam_" + (Object.keys(this.cameras).length + 1);
     }
-    var add = new camera(name);
+    var add = new camera({
+      name: name
+    });
     this.cameras[name] = add;
     this.game.add_unit(add);
     this.game.control(name);
@@ -43,7 +45,9 @@ class player {
   create_unit(name, type) {
     name = this.Id + "_" + name;
     type = window.unit_types[type];
-    var add = new type(name);
+    var add = new type({
+      name: name
+    });
     return this.add_unit(add);
   }
 }

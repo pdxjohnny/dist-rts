@@ -1,8 +1,8 @@
 "use strict";
 
 class structure_base extends structure {
-  constructor(name) {
-    super(name);
+  constructor(options) {
+    super(options);
     this.send_update();
   }
 }

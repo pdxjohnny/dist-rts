@@ -78,7 +78,9 @@ space.prototype.add_unit = function (add) {
 }
 
 space.prototype.create_unit = function (name, type) {
-  var add = new (window.unit_types[type])(name);
+  var add = new(window.unit_types[type])({
+    name: name
+  });
   return this.add_unit(add);
 }
 

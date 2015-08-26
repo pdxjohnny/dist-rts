@@ -70,7 +70,7 @@ class sprite {
   }
   update(modifier) {
     if (typeof this.stats.speed !== 'undefined' &&
-      this.stats.speed > 0 &&
+      this.stats.max_speed > 0 &&
       typeof this.stats.x !== 'undefined' &&
       typeof this.stats.y !== 'undefined' &&
       this.angle_of()) {

@@ -16,6 +16,17 @@ class selector {
     // For select box
     this.selectBoxStart = {};
     this.selectBoxEnd = {};
+    // Make the Id so this has a name
+    this.stats = {
+      Id: this.player.Id,
+      x: 0,
+      y: 0,
+    };
+    // Add to the game so we can draw the box
+    this.player.add_unit(this);
+    // Need an x and y to be drawn
+    this.x = 0;
+    this.y = 0;
   }
   bind_clicks() {
     document.addEventListener("mousedown",
@@ -103,6 +114,19 @@ class selector {
       break;
     default:
       console.log("You have a strange Mouse!");
+    }
+  }
+
+  draw(ctx) {
+    if (Object.keys(this.selectBoxStart).length > 0 &&
+      Object.keys(this.selectBoxEnd).length > 0) {
+      // Draw the rectange
+      ctx.beginPath();
+      ctx.rect(this.selectBoxStart.x,
+        this.selectBoxStart.y,
+        this.selectBoxEnd.x - this.selectBoxStart.x,
+        this.selectBoxEnd.y - this.selectBoxStart.y);
+      ctx.stroke();
     }
   }
 }

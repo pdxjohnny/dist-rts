@@ -20,3 +20,17 @@
   width: 100px;
   height: 100px;
 }
+
+.title {
+  font-weight: bold;
+  text-align: center;
+}
+
+.opt_img {
+  width:auto;
+  max-width:50%;
+  height:auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}

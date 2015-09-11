@@ -1,31 +1,50 @@
 #!/bin/bash
+# set -e
 
 PRODUCT_NAME="dist-rts"
 GITHUB_USERNAME="pdxjohnny"
-BUILD_DIR=""
+BUILD_DIR="./"
+
+in_path () {
+  IS_IN_PATH=1
+  if [ -n "$1" ]
+    then
+    command -v $1 >/dev/null 2>&1 || { IS_IN_PATH=0; }
+  fi
+  return ${IS_IN_PATH}
+}
 
 if [ -z "$1" ]; then
-    OS_PLATFORM_ARG=(-os="darwin linux windows")
+  OS_PLATFORM_ARG=(-os="darwin linux windows")
 else
-    OS_PLATFORM_ARG=($1)
+  OS_PLATFORM_ARG=($1)
 fi
 
 if [ -z "$2" ]; then
-    OS_ARCH_ARG=(-arch="386 amd64 arm")
+  OS_ARCH_ARG=(-arch="386 amd64 arm")
 else
-    OS_ARCH_ARG=($2)
+  OS_ARCH_ARG=($2)
 fi
 
 # Build Docker image unless we opt out of it
 if [[ -z "$SKIP_BUILD" ]]; then
-    docker build -t "${PRODUCT_NAME}_compiler" -f Dockerfile.compiler .
+  docker build -t "${PRODUCT_NAME}_compiler" -f Dockerfile.compiler .
 fi
 
 # Get rid of existing binaries
-rm -f ${PRODUCT_NAME}*
-rm -rf Godeps/_workspace/pkg
-godep restore
-docker run --rm -v `pwd`:/go/src/github.com/${GITHUB_USERNAME}/${PRODUCT_NAME} "${PRODUCT_NAME}_compiler" gox "${OS_PLATFORM_ARG[@]}" "${OS_ARCH_ARG[@]}" -output="${PRODUCT_NAME}_{{.OS}}-{{.Arch}}" -ldflags="-w"
+mkdir -p ${BUILD_DIR}
+rm -f ${BUILD_DIR}${PRODUCT_NAME}_*
+# Restore godeps
+in_path godep
+if [[ $? == 1 ]]; then
+  rm -rf Godeps
+  godep save ./...
+fi
+docker run --rm -v `pwd`:/go/src/github.com/${GITHUB_USERNAME}/${PRODUCT_NAME} "${PRODUCT_NAME}_compiler" gox "${OS_PLATFORM_ARG[@]}" "${OS_ARCH_ARG[@]}" -output="${BUILD_DIR}${PRODUCT_NAME}_{{.OS}}-{{.Arch}}" -tags netgo
 
 # Build the docker image
-docker build -t "${GITHUB_USERNAME}/${PRODUCT_NAME}" .
+if [[ -z "$SKIP_IMAGE" ]]; then
+  docker build -t "${GITHUB_USERNAME}/${PRODUCT_NAME}" .
+  echo "Built ${GITHUB_USERNAME}/${PRODUCT_NAME}"
+  echo "docker run --rm -ti ${GITHUB_USERNAME}/${PRODUCT_NAME}"
+fi

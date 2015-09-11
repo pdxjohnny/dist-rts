@@ -5,6 +5,7 @@ window.on_units_loaded = false;
 var space = function space(canvas_div_id) {
   this.set_canvas(canvas_div_id);
   this.full_screen();
+  this.options = window.options;
   this.all = {};
   this.front = {};
   this.middle = {};

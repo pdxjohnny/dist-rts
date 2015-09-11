@@ -1,0 +1,21 @@
+{
+  "name": "dist-rts",
+  "version": "0.0.1",
+  "homepage": "https://github.com/pdxjohnny/dist-rts",
+  "authors": [
+    "John Andersen <johnandersenpdx@gmail.com>"
+  ],
+  "description": "RTS",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "static/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "angularjs#~1.4.5"
+  }
+}

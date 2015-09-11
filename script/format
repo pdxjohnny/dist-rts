@@ -1,5 +1,4 @@
 #!/bin/bash
 
-gofmt -w *.go
-gofmt -w */*.go
+find ./ -name "*.go" -exec gofmt -w {} \;
 find ./ -name "*.js" -exec js-beautify -rjn -s 2 {} \;

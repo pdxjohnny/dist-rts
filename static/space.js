@@ -5,7 +5,9 @@ window.on_units_loaded = false;
 var space = function space(canvas_div_id) {
   this.set_canvas(canvas_div_id);
   this.full_screen();
-  this.options = window.options;
+  this.options = new Options({
+    id: "bottom_bar"
+  });
   this.all = {};
   this.front = {};
   this.middle = {};
@@ -106,6 +108,10 @@ space.prototype.load_units = function (url) {
   this.load_url = url;
   window.load_url = this.load_url;
   unit_scripts_include.src = this.load_url + "include.js";
+}
+
+space.prototype.set_options = function (opts) {
+  this.options.options = opts;
 }
 
 

@@ -28,6 +28,7 @@ Author: John Andersen
 
 	<!-- CSS
   ================================================== -->
+	<link rel="stylesheet" href="style.css">
 	<!-- <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css"> -->
 
 	<!--[if lt IE 9]>
@@ -61,30 +62,19 @@ Author: John Andersen
 
 </head>
 
-<div id="top_bar" style="
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	min-height: 0px;
-	z-index:99;
-	background-color: rgba(255, 255, 255, 0.6);
-	color: black;">
+<div id="top_bar" class="bar" style="top: 0;">
 	<input id="unit_url" value="units/" ></input>
 	<button onclick="load_units();" >Load</button>
 
 	<input id="playername" value="user" ></input>
 	<button onclick="add_and_control();" >Start</button>
 </div>
-<div id="bottom_bar" style="
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	width: 100%;
-	min-height: 0px;
-	z-index:99;
-	background-color: rgba(255, 255, 255, 0.6);
-	color: black;">
+
+<div id="bottom_bar" class="bar" style="bottom: 0;">
+	<div id="container" style="">
+	  <div id="bottom_bar_inner" style="overflow:hidden;">
+	  </div>
+	</div>
 </div>
 
 <canvas id="game_canvas" ></canvas>

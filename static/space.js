@@ -1,7 +1,3 @@
-window.unit_types = {};
-window.units_loaded = false;
-window.on_units_loaded = false;
-
 var space = function space(canvas_div_id) {
   this.set_canvas(canvas_div_id);
   this.full_screen();

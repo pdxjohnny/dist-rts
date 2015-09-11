@@ -61,7 +61,7 @@ class selector {
 
   select(unit) {
     unit.select(true);
-    this.selected[i] = unit;
+    this.selected[unit.stats.Id] = unit;
   }
 
   unselect_all() {

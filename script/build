@@ -40,7 +40,7 @@ if [[ $? == 1 ]]; then
   rm -rf Godeps
   godep save ./...
 fi
-docker run --rm -v `pwd`:/go/src/github.com/${GITHUB_USERNAME}/${PRODUCT_NAME} "${PRODUCT_NAME}_compiler" gox "${OS_PLATFORM_ARG[@]}" "${OS_ARCH_ARG[@]}" -output="${BUILD_DIR}${PRODUCT_NAME}_{{.OS}}-{{.Arch}}" -tags netgo
+docker run --rm -v `pwd`:/go/src/github.com/${GITHUB_USERNAME}/${PRODUCT_NAME} "${PRODUCT_NAME}_compiler" gox "${OS_PLATFORM_ARG[@]}" "${OS_ARCH_ARG[@]}" -tags netgo -output="${BUILD_DIR}${PRODUCT_NAME}_{{.OS}}-{{.Arch}}"
 
 # Build the docker image
 if [[ -z "$SKIP_IMAGE" ]]; then

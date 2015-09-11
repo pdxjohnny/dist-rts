@@ -15,15 +15,15 @@
 		},
 		{
 			"ImportPath": "github.com/pdxjohnny/microsocket/client",
-			"Rev": "b8236cf6a34fd3a0714698b1e1e116b89b2b03ad"
+			"Rev": "3b48e54bb1af6e7459ff9405c19c977bc32cbfad"
 		},
 		{
 			"ImportPath": "github.com/pdxjohnny/microsocket/random",
-			"Rev": "b8236cf6a34fd3a0714698b1e1e116b89b2b03ad"
+			"Rev": "3b48e54bb1af6e7459ff9405c19c977bc32cbfad"
 		},
 		{
 			"ImportPath": "github.com/pdxjohnny/microsocket/service",
-			"Rev": "b8236cf6a34fd3a0714698b1e1e116b89b2b03ad"
+			"Rev": "3b48e54bb1af6e7459ff9405c19c977bc32cbfad"
 		}
 	]
 }

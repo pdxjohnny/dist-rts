@@ -1,29 +1,16 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
+	"runtime"
 
-	"github.com/pdxjohnny/easysock"
+	"github.com/spf13/cobra"
 
-	"github.com/pdxjohnny/dist-rts/config"
+	"github.com/pdxjohnny/dist-rts/commands"
 )
 
-func Run() error {
-	conf := config.Load()
-	go easysock.Hub.Run()
-	fs := http.FileServer(http.Dir("static"))
-	http.Handle("/", fs)
-	http.HandleFunc("/ws", easysock.ServeWs)
-	port := fmt.Sprintf(":%s", conf.Port)
-	err := http.ListenAndServe(port, nil)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	return nil
-}
-
 func main() {
-	Run()
+	runtime.GOMAXPROCS(runtime.NumCPU())
+	var rootCmd = &cobra.Command{Use: "dist-rts"}
+	rootCmd.AddCommand(commands.Commands...)
+	rootCmd.Execute()
 }

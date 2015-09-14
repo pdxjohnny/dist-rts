@@ -34,13 +34,10 @@ func (client *Client) AllData() map[string]interface{} {
 	allDone := make(chan bool, 1)
 	go func() {
 		for {
-			// Wait a DumpDone message to come back
-			num := <-client.Channels[ChannelKey]
-			add, err := strconv.Atoi(num)
-			if err != nil {
-				log.Println("AllData", err)
-			}
-			numRecieved += add
+			// Increent numRecieved when a dump message is received
+			<-client.Channels[ChannelKey]
+			numRecieved++
+			// If there are as many or more and needed then return
 			if numNeeded != -1 && numRecieved >= numNeeded {
 				allDone <- true
 				return
@@ -48,16 +45,19 @@ func (client *Client) AllData() map[string]interface{} {
 		}
 	}()
 	go func() {
+		// Set the amount of dumps sent as numNeeded
 		size := <-client.Channels[ChannelKeyDone]
 		add, err := strconv.Atoi(size)
 		if err != nil {
 			log.Println("AllData", err)
 		}
 		numNeeded = add
+		// If there are as many or more and needed then return
 		if numNeeded != -1 && numRecieved >= numNeeded {
 			allDone <- true
 		}
 	}()
+	// Wait for all to be received before returning
 	<-allDone
 	return allData
 }
@@ -100,7 +100,7 @@ func (client *Client) DumpRecv(raw_message []byte) {
 	// Dereference the pointer to the map
 	(*allData)[message["Id"].(string)] = &message
 	// One was received so send that to AllData
-	client.Channels[ChannelKey] <- "1"
+	client.Channels[ChannelKey] <- ""
 }
 
 func (client *Client) DumpDone(raw_message []byte) {

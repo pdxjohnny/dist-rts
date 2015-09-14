@@ -54,16 +54,11 @@ func (storage *Storage) DumpTracker(DumpKey string) bool {
 		storage.DumpTrack[DumpKey] = make(chan bool, 1)
 	}
 	// Wait for client of choose this service to Dump
-	chooseMe := messages.StorageChooseDump{
+	storage.SendInterface(messages.StorageChooseDump{
 		Method:   "ChooseDump",
 		DumpKey:  DumpKey,
 		ClientId: storage.ClientId,
-	}
-	sendChoose, err := json.Marshal(chooseMe)
-	if err != nil {
-		return false
-	}
-	storage.Write(sendChoose)
+	})
 	// If the service is not
 	timeout := make(chan bool, 1)
 	go func() {
@@ -113,6 +108,7 @@ func (storage *Storage) Dump(raw_message []byte) {
 	if !shouldDump {
 		return
 	}
+	numDumped := 0
 	// Loop through all stored data
 	for _, value := range storage.Data {
 		// Add the DumpKey to the object
@@ -126,18 +122,14 @@ func (storage *Storage) Dump(raw_message []byte) {
 		}
 		// Dump it to clients
 		storage.Write(dumpValue)
+		numDumped++
 	}
-	// Tell clients we are done dumping
-	DumpDone := messages.StorageDump{
+	// Send the length of the data to be dumped
+	storage.SendInterface(messages.StorageDumpDone{
 		Method:  "DumpDone",
 		DumpKey: message.DumpKey,
-	}
-	sendDumpDone, err := json.Marshal(DumpDone)
-	if err != nil {
-		fmt.Println(err)
-	}
-	// Send DumpDone to clients
-	storage.Write(sendDumpDone)
+		Size:    numDumped,
+	})
 	// Done dumping no need to track dumped anymore
 	delete(storage.DumpTrack, message.DumpKey)
 }

@@ -11,8 +11,8 @@ import (
 )
 
 type TestStorage struct {
-	Method string
 	Id     string
+	Method string
 }
 
 func checkOnUpdate(should_be string, gotUpdate chan int) func(storage *Storage, raw_message []byte) {

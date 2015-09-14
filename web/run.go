@@ -3,8 +3,8 @@ package web
 import (
 	"net/http"
 
-	"github.com/spf13/viper"
 	"github.com/pdxjohnny/easysock"
+	"github.com/spf13/viper"
 )
 
 func Run() {

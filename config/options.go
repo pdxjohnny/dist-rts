@@ -1,4 +1,4 @@
-package commands
+package config
 
 var ConfigOptions = map[string]interface{}{
 	"web": map[string]interface{}{
@@ -17,6 +17,20 @@ var ConfigOptions = map[string]interface{}{
 		"key": map[string]interface{}{
 			"value": "keys/web/key.pem",
 			"help":  "Key to use",
+		},
+	},
+	"storage": map[string]interface{}{
+		"host": map[string]interface{}{
+			"value": "localhost",
+			"help":  "Host to connect to",
+		},
+		"port": map[string]interface{}{
+			"value": 8081,
+			"help":  "Port to connect to",
+		},
+		"cert": map[string]interface{}{
+			"value": "keys/web/cert.pem",
+			"help":  "Certificate to use",
 		},
 	},
 }

@@ -6,19 +6,20 @@ type StorageUpdate struct {
 	Method string
 }
 
-// Store anything with an Id
 type StorageDump struct {
-	StorageUpdate
+	Method  string
 	DumpKey string
-	// The client id of the service that is chosen to dump
-	Method string
 }
 
-// Store anything with an Id
 type StorageChooseDump struct {
-	StorageUpdate
 	Method  string
 	DumpKey string
 	// The client id of the service that is chosen to dump
 	ClientId string
+}
+
+type StorageDumpDone struct {
+	Method  string
+	DumpKey string
+	Size int
 }

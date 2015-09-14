@@ -3,6 +3,7 @@ package client
 import (
 	"encoding/json"
 	"log"
+	"strconv"
 
 	"github.com/pdxjohnny/dist-rts/messages"
 )
@@ -30,19 +31,34 @@ func (client *Client) AllData() map[string]interface{} {
 	})
 	numNeeded := -1
 	numRecieved := 0
-	switch {
-	// Wait a DumpDone message to come back
-	case num := <-client.Channels[ChannelKey]:
-		numRecieved += int(num)
-		if numRecieved >= numNeeded {
-			return allData
+	allDone := make(chan bool, 1)
+	go func() {
+		for {
+			// Wait a DumpDone message to come back
+			num := <-client.Channels[ChannelKey]
+			add, err := strconv.Atoi(num)
+			if err != nil {
+				log.Println("AllData", err)
+			}
+			numRecieved += add
+			if numNeeded != -1 && numRecieved >= numNeeded {
+				allDone <- true
+				return
+			}
 		}
-	case num := <-client.Channels[ChannelKeyDone]:
-		numNeeded = int(num)
-		if numRecieved >= numNeeded {
-			return allData
+	}()
+	go func() {
+		size := <-client.Channels[ChannelKeyDone]
+		add, err := strconv.Atoi(size)
+		if err != nil {
+			log.Println("AllData", err)
 		}
-	}
+		numNeeded = add
+		if numNeeded != -1 && numRecieved >= numNeeded {
+			allDone <- true
+		}
+	}()
+	<-allDone
 	return allData
 }
 
@@ -65,7 +81,6 @@ func (client *Client) ChooseDump(raw_message []byte) {
 }
 
 func (client *Client) DumpRecv(raw_message []byte) {
-	log.Println(string(raw_message))
 	// Parse the message to a json
 	message, err := client.MapBytes(raw_message)
 	// Return if error or no DumpKey or not the client specified to dump
@@ -84,23 +99,26 @@ func (client *Client) DumpRecv(raw_message []byte) {
 	// Added it to the Shared map of data received
 	// Dereference the pointer to the map
 	(*allData)[message["Id"].(string)] = &message
+	// One was received so send that to AllData
+	client.Channels[ChannelKey] <- "1"
 }
 
 func (client *Client) DumpDone(raw_message []byte) {
-	log.Println(string(raw_message))
+	// Create a new message struct
+	message := new(messages.StorageDumpDone)
 	// Parse the message to a json
-	message, err := client.MapBytes(raw_message)
+	err := json.Unmarshal(raw_message, &message)
 	// Return if error or no DumpKey or not the client specified to dump
-	ChannelKey := message["DumpKey"].(string)
-	if err != nil || ChannelKey == "" {
+	if err != nil || message.DumpKey == "" {
+		log.Fatalln("Error in dumpdone Parse")
 		return
 	}
 	// If we are waiting for this DumpKey then it will be in Channels
-	_, ok := client.Channels[ChannelKey]
+	_, ok := client.Channels[message.DumpKey]
 	// If its not there don't worry about this message
 	if !ok {
 		return
 	}
 	// Send the done signal to the channel
-	client.Channels[ChannelKey] <- message.Size
+	client.Channels[message.DumpKey+"_done"] <- strconv.Itoa(message.Size)
 }

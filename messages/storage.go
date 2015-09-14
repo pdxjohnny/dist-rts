@@ -21,5 +21,5 @@ type StorageChooseDump struct {
 type StorageDumpDone struct {
 	Method  string
 	DumpKey string
-	Size int
+	Size    int
 }

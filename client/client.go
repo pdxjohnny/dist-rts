@@ -25,11 +25,10 @@ func NewClient() *Client {
 	return &client
 }
 
-func (client *Client) CreateChannel(key... []string) string {
+func (client *Client) CreateChannel(key ...string) string {
+	ChannelKey := random.Letters(10)
 	if len(key) > 0 && key[0] != "" {
-		ChannelKey := key[0]
-	} else {
-		ChannelKey := random.Letters(10)
+		ChannelKey = key[0]
 	}
 	// Allocate a channel so we know when all data has been received
 	_, ok := client.Channels[ChannelKey]

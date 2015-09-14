@@ -35,6 +35,15 @@ Outline
   - Construction service
 - Javascript client to render game
 
+Building
+---
+
+```bash
+./script/build
+#fast way
+SKIP_BUILD=1 SKIP_IMAGE=1 ./script/build -osarch="linux/amd64"
+```
+
 Testing
 ---
 
